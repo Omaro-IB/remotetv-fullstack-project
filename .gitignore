@@ -1,0 +1,23 @@
+# Root folder (large video files are stored here)
+back/root/*
+
+# Logs
+logs
+*.log
+
+# Modules and assets
+node_modules
+dist
+dist-ssr
+*.local
+*.old
+
+# Editor directories and files
+.idea
+.DS_Store
+
+# Packages and configs and stuff
+package-lock.json
+.eslintrc.cjs
+vite.config.js
+.env
