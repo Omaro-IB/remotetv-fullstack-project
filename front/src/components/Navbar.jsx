@@ -23,7 +23,7 @@ const Navbar = ({dark, page, toggleDark}) => {
             <FaMoon className={dark ? "hidden" : "w-5 h-5 fill-surface-on"}></FaMoon>
         </button>
         <HashLink to="/"><NavbarLink dark={dark} strikethrough={page === "Home"}
-                                     text={"Remote"}></NavbarLink></HashLink>
+                                     text={"TV Remote"}></NavbarLink></HashLink>
         <HashLink to="/library"><NavbarLink dark={dark} strikethrough={page === "Library"}
                                             text={"Library"}></NavbarLink></HashLink>
         <HashLink to="/search"><NavbarLink dark={dark} strikethrough={page === "Search"}
