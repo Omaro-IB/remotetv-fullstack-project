@@ -1,14 +1,14 @@
 ### GET request to init
-GET http://192.168.0.101/init
+GET http://192.168.0.101:8945/init
 
 ###
 
 ### GET request to load ID 0
-GET http://192.168.0.101/load/0
+GET http://192.168.0.101:8945/load/0
 
 ###
 
 ### GET request to state
-GET http://192.168.0.101/filename
+GET http://192.168.0.101:8945/filename
 
 ###

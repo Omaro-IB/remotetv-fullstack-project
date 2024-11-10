@@ -46,7 +46,7 @@ const LibraryPage = ({dark, playCallback, errorCallback1, errorCallback2}) => {
                         </div>
                         <div className={"flex flex-1 w-full justify-end pr-5"}>
                             <button onClick={() => services.playByID(box.id).then(() => {{playCallback(); navigate("/")}}).catch(errorCallback2)}
-                                className={dark ? "bg-dark-primary-container w-fit my-2 p-3 text-lg text-dark-primary-container-on rounded drop-shadow-2xlw" : "bg-primary-container w-fit my-2 p-3 text-lg text-primary-container-on rounded drop-shadow-2xl"}>
+                                className={dark ? "bg-dark-primary-container w-fit my-2 p-3 text-lg text-dark-primary-container-on rounded drop-shadow-2xl" : "bg-primary-container w-fit my-2 p-3 text-lg text-primary-container-on rounded drop-shadow-2xl"}>
                                 <p className={!(box.metadata.type === "tv") ? "hidden" : ""}>Select Episode</p>
                                 <p className={((box.metadata.type === "tv")) ? "hidden" : ""}>Play from Start</p>
                             </button>

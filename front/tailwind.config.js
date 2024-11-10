@@ -12,6 +12,7 @@ export default {
     colors: {
       'surface': '#FEF7FF',
       'surface-trans': 'rgba(254,247,255,0.5)',
+      'surface-trans2': 'rgba(254,247,255,0.9)',
       'surface-on': '#1D1B20',
       'primary': '#6750A4',
       'primary-on': '#FFFFFF',
@@ -33,6 +34,7 @@ export default {
       'outline-variant': '#79747E',
       'dark-surface': '#141218',
       'dark-surface-trans': 'rgba(20,18,24,0.5)',
+      'dark-surface-trans2': 'rgba(20,18,24,0.9)',
       'dark-surface-on': '#E6E0E9',
       'dark-primary': '#D0BCFF',
       'dark-primary-on': '#381E72',
@@ -52,7 +54,14 @@ export default {
       'dark-error-container-on': '#F9DEDC',
       'dark-outline': '#938F99',
       'dark-outline-variant': '#49454F',
-      'dark-shadow': '#222222'
+      'dark-shadow': '#222222',
+      'gradient1': '#3b82f6',
+      'gradient2': '#ac33ea',
+      'gradient3':  '#d987fa',
+      'dark-gradient1': '#142f57',
+      'dark-gradient2': '#4b1468',
+      'dark-gradient3':  '#4e3459'
+
     },
   },
   plugins: [],

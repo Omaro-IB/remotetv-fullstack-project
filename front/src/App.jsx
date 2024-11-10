@@ -1,6 +1,7 @@
 import './App.css'
 import React, { useEffect, useState } from 'react';
 import HomePage from "./pages/HomePage.jsx";
+import Player from "./components/Player.jsx"
 import Navbar from "./components/Navbar.jsx";
 import LibraryPage from "./pages/LibraryPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
@@ -40,10 +41,8 @@ const App = () => {
     const stopClick = () => {services.stop().then(_ => setIsPlaying(false)).catch(_ => displayMessage("Error stopping", 2000))}
     const backClick = () => {services.timestamp(Math.max(0, timestamp - 10)).then(_ => setTimestamp(Math.max(0, timestamp - 10))).catch(_ => displayMessage("Error skipping back", 2000))}
     const forwardClick = () => {services.timestamp(Math.min(endTime, timestamp + 10)).then(_ => setTimestamp(Math.min(endTime, timestamp + 10))).catch(_ => displayMessage("Error skipping forward", 2000))}
-    const skipBackClick = () => {services.timestamp(0).then(_ => setTimestamp(0)).catch(_ => displayMessage("Error skipping to start", 2000))}
-    const skipForwardClick = () => {services.timestamp(endTime).then(_ => setTimestamp(endTime)).catch(_ => displayMessage("Error skipping to end", 2000))}
-    const volumeUpClick = () => {services.volume(Math.min(100, volume + 5)).then(_ => setVolume(Math.min(100, volume + 5))).catch(_ => displayMessage("Error increasing volume", 2000))}
-    const volumeDownClick = () => {services.volume(Math.max(0, volume - 5)).then(_ => setVolume(Math.max(0, volume - 5))).catch(_ => displayMessage("Error decreasing volume", 2000))}
+    const onSetVolume = (v) => {services.volume(v).then(_ => setVolume(v)).catch(_ => displayMessage("Error changing volume", 2000))}
+    const onSetTimestamp = (t) => {services.timestamp(t).then(_ => setTimestamp(t)).catch(_ => displayMessage("Error changing timestamp", 2000))}
 
     // Refresh Status on First Refresh + SSEs
     const refreshStatus = () => {
@@ -62,12 +61,15 @@ const App = () => {
         }).catch(err => {
             console.log(err)
             displayMessage("Error getting media player status from server", -1)
-        })  // TODO: instead, display connect screen
+        })
     }
     useEffect(refreshStatus, []);  // refresh on first render  TODO: SSE
 
     const increaseSeconds = () => {
-        if (isPlaying && isResumed) {setTimeout(() => setTimestamp(timestamp + 1), 1000)}
+        if (isPlaying && isResumed) {
+            const interval = setTimeout(() => setTimestamp(timestamp + 1), 1000)
+            return () => {clearInterval(interval)}
+        }
     }
     useEffect(increaseSeconds)  // if media is playing, assume + 1 second every second
 
@@ -76,11 +78,11 @@ const App = () => {
         <div className={rootClassName}>
             <Navbar dark={dark} page={"Home"} toggleDark={toggleDark}/>
             <div className={(errorMessage === "") ? "hidden" : ""}><ErrorBar dark={dark} message={errorMessage}/></div>
-            <HomePage dark={dark} isPlaying={isPlaying} isResumed={isResumed} img={image} title={title}
-                      timestamp={timestamp} endTime={endTime} volume={volume}
-                      pausePlayClick={pausePlayClick} stopClick={stopClick} backClick={backClick}
-                      forwardClick={forwardClick} skipBackClick={skipBackClick} skipForwardClick={skipForwardClick}
-                      volumeUpClick={volumeUpClick} volumeDownClick={volumeDownClick}/>
+            <HomePage dark={dark} showPlayer={isPlaying}>
+                <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed}
+                        pausePlayClick={pausePlayClick} volume={volume} onSetVolume={onSetVolume} title={title} img={image}
+                        forwardClick={forwardClick} backClick={backClick} stopClick={stopClick}/>
+            </HomePage>
         </div>)
 
     // Library Page + Navbar

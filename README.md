@@ -9,10 +9,9 @@ Alternative Smart TV built on MPV, React, and NodeJS
  - [X] Use [PM2](https://stackoverflow.com/questions/5999373/how-do-i-prevent-node-js-from-crashing-try-catch-doesnt-work) to stop crashes
 
 ### Frontend
- - [ ] Favicon 
+ - [X] Favicon 
  - [ ] Make media player look nicer
- - [ ] Add connection functionality using symbols/letters and some subnet logic
- - [ ] Home page (prompt for search / browse library) and info button (copyright + how to use it + GitHub link)
+ - [X] Home page (prompt for search / browse library) and info button (copyright + how to use it + GitHub link)
 
 ### Backend
   - [ ] Use Server-Sent Events (SSE) (see [events.odt]) to update users' media player if any changes are made from another party
