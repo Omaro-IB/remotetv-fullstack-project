@@ -20,8 +20,26 @@ const getStatus = () => {
 
     // Set "playing" = info of playing media (from directory.json)
     const promise1 = mpv.getProperty("path").then(path => {
+        console.log("path", path)
         let library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
-        status["playing"] = library.find(value => join(__dirname, root_folder, value.path) === path)
+
+        // Find the media that is playing, and its season/episode (if relevant) from path
+        let playing = false
+        let season = undefined
+        let episode = undefined
+        for (const media of library) {
+            if (!(media.type === "tv")) {if (join(__dirname, root_folder, media.path) === path) {playing = media.id; break}}
+            else {
+                for (const s of Object.keys(media.episodes)) {
+                    for (const e of Object.keys(media.episodes[s])) {
+                        if (join(__dirname, root_folder, media.episodes[s][e]) === path) {playing = media.id; season = s; episode = e; break}
+                    }
+                }
+            }
+        }
+        status["playing"] = library[playing]
+        status["season"] = season
+        status["episode"] = episode
     }).catch((_) => {no_catches = false})
 
     // Set "resumed" = true/false
@@ -95,9 +113,24 @@ app.get('/load/:id', (req, res) => {
   }).catch((error) => {
     if (error.errcode === 8) {res.status(401).send(`MPV is not running, make sure to GET /init first`)}
     else if (error.errcode === 0) {res.status(404).send(`Path ${filePath} not found`)}
-    else {console.log(error); res.status(500).send(`error loading file /${req.params[0]}; see logs for more details`)}
+    else {console.log(error); res.status(500).send(`error loading ID /${req.params[0]}; see logs for more details`)}
   })
 })
+
+app.get('/load/:id/:season/:episode', (req, res) => {
+  let directory = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+  let filePath = directory.find(value => value.id === req.params.id).episodes[req.params.season][req.params.episode]
+  if (filePath === undefined) {res.status(404).send({error: `ID ${req.params.id} not found`}); return}
+
+  mpv.load(join(root_folder, filePath)).then(() => {
+    res.status(200).send(`Successfully loaded id,season,episode /${req.params.id}/${req.params.season}/${req.params.episode}`)
+  }).catch((error) => {
+    if (error.errcode === 8) {res.status(401).send(`MPV is not running, make sure to GET /init first`)}
+    else if (error.errcode === 0) {res.status(404).send(`Path ${filePath} not found`)}
+    else {console.log(error); res.status(500).send(`error loading ID /${req.params.id}/${req.params.season}/${req.params.episode}; see logs for more details`)}
+  })
+})
+
 
 // Set volume
 app.get('/volume/:volume', (req, res) => {
