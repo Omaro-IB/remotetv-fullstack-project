@@ -9,6 +9,8 @@ Alternative Smart TV built on MPV, React, and NodeJS
  - [X] Use [PM2](https://stackoverflow.com/questions/5999373/how-do-i-prevent-node-js-from-crashing-try-catch-doesnt-work) to stop crashes
 
 ### Frontend
+ - [X] Episode selector for TV shows
+ - [X] Handle cases where directory.json is formatted incorrectly
  - [X] Favicon 
  - [X] Make media player look nicer
  - [X] Home page (prompt for search / browse library) and info button (copyright + how to use it + GitHub link)
