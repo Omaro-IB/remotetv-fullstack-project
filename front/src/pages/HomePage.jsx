@@ -12,6 +12,8 @@ const HomePage = ({dark, displayMessage}) => {
     const [volume, setVolume] = useState(0);
     const [title, setTitle] = useState("Loading...");
     const [image, setImage] = useState("");
+    const [season, setSeason] = useState(undefined);
+    const [episode, setEpisode] = useState(undefined);
 
     // Media Control API Calls
     const pausePlayClick = () => {services.playPause().then(_ => setIsResumed(!isResumed)).catch(_ => displayMessage("Error playing/pausing", 2000)) }
@@ -32,6 +34,8 @@ const HomePage = ({dark, displayMessage}) => {
                 setTimestamp(status.data["time"])
                 setEndTime(status.data["endTime"])
                 setVolume(status.data["volume"])
+                setSeason(status.data["season"])
+                setEpisode(status.data["episode"])
             } else {
                 setIsPlaying(false)
             }
@@ -55,7 +59,7 @@ const HomePage = ({dark, displayMessage}) => {
             <div className={!isPlaying ? "hidden" : ""}>
                 <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed}
                          pausePlayClick={pausePlayClick} volume={volume} onSetVolume={onSetVolume} title={title} img={image}
-                         forwardClick={forwardClick} backClick={backClick} stopClick={stopClick}/>
+                         forwardClick={forwardClick} backClick={backClick} stopClick={stopClick} season={season} episode={episode}/>
             </div>
             {/*  Info component - displayed if !isPlaying */}
             <div className={isPlaying ? "hidden" : ""}>

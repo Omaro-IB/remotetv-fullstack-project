@@ -11,7 +11,7 @@ const Container = ({children, dark}) => (
     </div>
 )
 
-export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, stopClick, backClick, forwardClick}) {
+export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, season, episode, stopClick, backClick, forwardClick}) {
     function formatDuration(value) {
         const minute = Math.floor(value / 60);
         const secondLeft = Math.ceil(value - minute * 60);
@@ -32,6 +32,9 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                 </div>
                 <div className={"text-left h-32 overflow-scroll"}>
                     <strong>{title}</strong>
+                    <div className={(season === undefined || episode === undefined) ? "hidden" : ""}>
+                        <p className={"italic"}>{(season === undefined || episode === undefined) ? "" : `Season ${season} Episode ${episode}`}</p>
+                    </div>
                 </div>
             </div>
 
