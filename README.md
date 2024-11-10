@@ -10,7 +10,7 @@ Alternative Smart TV built on MPV, React, and NodeJS
 
 ### Frontend
  - [X] Favicon 
- - [ ] Make media player look nicer
+ - [X] Make media player look nicer
  - [X] Home page (prompt for search / browse library) and info button (copyright + how to use it + GitHub link)
 
 ### Backend
