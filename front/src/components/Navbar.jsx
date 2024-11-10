@@ -15,7 +15,7 @@ const Navbar = ({dark, page, toggleDark}) => {
     const [displayInfo, setDisplayInfo] = useState(false);
 
     return (<div className={dark ? "bg-dark-primary-container flex flex-row justify-between sm:justify-start sm:space-x-10 py-5 px-10" : "bg-primary-container flex flex-row justify-between sm:justify-start sm:space-x-10 py-5 px-10 ring-slate-900/5 shadow-md"}>
-        <button onClick={() => setDisplayInfo(true)}> {/*TODO: make this button go somewhere*/}
+        <button onClick={() => setDisplayInfo(true)}>
             <FaInfoCircle className={dark ? "w-5 h-5 fill-dark-surface-on" : "w-5 h-5 fill-surface-on"}/>
         </button>
         <button onClick={toggleDark}>
