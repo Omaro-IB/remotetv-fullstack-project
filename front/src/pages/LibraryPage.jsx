@@ -5,7 +5,7 @@ import services from "../services.js"
 import React, { useEffect, useState } from 'react';
 import {useNavigate} from "react-router-dom";
 
-const LibraryPage = ({dark, playCallback, errorCallback1, errorCallback2}) => {
+const LibraryPage = ({dark, displayMessage}) => {
     const navigate = useNavigate()
     const [boxes, setBoxes] = useState([])
 
@@ -13,7 +13,7 @@ const LibraryPage = ({dark, playCallback, errorCallback1, errorCallback2}) => {
     const refreshData = () => {
         services.getLibrary().then(data => {
             setBoxes(data)
-        }).catch(errorCallback1)
+        }).catch(() => displayMessage("Error getting library data from server", -1))
     }
     useEffect(refreshData, []);  // refresh on first render
 
@@ -45,7 +45,7 @@ const LibraryPage = ({dark, playCallback, errorCallback1, errorCallback2}) => {
                             <strong className={dark ? "bg-dark-surface-trans text-dark-surface-on h-24 overflow-auto" : "bg-surface-trans text-surface-on h-24 overflow-auto"}>{box.metadata.details}</strong>
                         </div>
                         <div className={"flex flex-1 w-full justify-end pr-5"}>
-                            <button onClick={() => services.playByID(box.id).then(() => {{playCallback(); navigate("/")}}).catch(errorCallback2)}
+                            <button onClick={() => services.playByID(box.id).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))}
                                 className={dark ? "bg-dark-primary-container w-fit my-2 p-3 text-lg text-dark-primary-container-on rounded drop-shadow-2xl" : "bg-primary-container w-fit my-2 p-3 text-lg text-primary-container-on rounded drop-shadow-2xl"}>
                                 <p className={!(box.metadata.type === "tv") ? "hidden" : ""}>Select Episode</p>
                                 <p className={((box.metadata.type === "tv")) ? "hidden" : ""}>Play from Start</p>
