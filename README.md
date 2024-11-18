@@ -22,6 +22,7 @@ Alternative Smart TV built on MPV, React, and NodeJS
   
 
 ### Plugins
+ - [X] Python module for plugins to use to register downloaded files
  - [ ] Endpoint to get list of plugins: `/plugins` which returns a list of the directory names of all the plugins (which will act as a natural unique ID to reference plugins). Organization should be as follows:
 	 - `plugins`
 		 + `YouTube`
