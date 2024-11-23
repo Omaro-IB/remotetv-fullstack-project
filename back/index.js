@@ -5,6 +5,7 @@ const mpvAPI = require('node-mpv')
 const {join} = require("node:path");
 const fs = require('fs');
 const cors = require('cors')
+const { spawnSync } = require('child_process');
 // END: Imports
 
 // BEGIN: App initialization
@@ -15,31 +16,25 @@ app.use(cors())
 app.disable('etag')
 const root_folder = "root"
 const getStatus = () => {
+    const SERIES_TYPES = ["tv", "album", "podcast"]
     let status = {"playing": undefined, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined}
     let no_catches = true
 
     // Set "playing" = info of playing media (from directory.json)
     const promise1 = mpv.getProperty("path").then(path => {
-        console.log("path", path)
         let library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
 
         // Find the media that is playing, and its season/episode (if relevant) from path
-        let playing = false
-        let season = undefined
-        let episode = undefined
-        for (const media of library) {
-            if (!(media.type === "tv")) {if (join(__dirname, root_folder, media.path) === path) {playing = media.id; break}}
+        for (const media of  library) {
+            if (!(SERIES_TYPES.includes(media.type))) {if (join(__dirname, root_folder, media.path) === path) {status["playing"] = media; break}}
             else {
                 for (const s of Object.keys(media.episodes)) {
                     for (const e of Object.keys(media.episodes[s])) {
-                        if (join(__dirname, root_folder, media.episodes[s][e]) === path) {playing = media.id; season = s; episode = e; break}
+                        if (join(__dirname, root_folder, media.episodes[s][e]) === path) {status["playing"] = media; status["season"] = s; status["episode"] = e; break}
                     }
                 }
             }
         }
-        status["playing"] = library[playing]
-        status["season"] = season
-        status["episode"] = episode
     }).catch((_) => {no_catches = false})
 
     // Set "resumed" = true/false
@@ -179,6 +174,54 @@ app.get('/timestamp/:timestamp', (req, res) => {
     })
 })
 // END: Endpoints for controls
+
+// BEGIN: Endpoints for plugins
+app.get('/plugins', (req, res) => {
+    fs.readdir("plugins", (err, files) => {
+        if (err) {
+            res.status(500).send("Error getting plugin info, see logs for more details.")
+            console.log(err);
+        } else {
+            res.status(200).json(files.filter(x => (x !== ".idea" && x !== "__init__.py" && x !== "__pycache__" && x !== "core")))
+        }
+    });
+})
+
+app.get('/plugins/thumbnail/:id', (req, res) => {
+    const options = {
+        root: join(__dirname)
+    };
+
+    res.sendFile(join("plugins", req.params.id, "thumbnail.png"), options, function (err) {
+        if (err) {
+            res.status(404).send(`plugin "${req.params.id}" not found`)
+        }
+    });
+});
+
+app.get('/plugins/search/:id', async (req, res) => {
+    if (!req.query.q) {res.status(400).send("No query found (use ?q=...)")}
+    else {
+        // Get result from python script
+        const pythonProcess = await spawnSync("python3", [
+            "-m", `plugins.${req.params.id}.plugin`, "SEARCH", req.query.p
+        ]);
+        res.status(200).send(pythonProcess.stdout?.toString()?.trim()?.split("\n"));
+    }
+})
+
+app.get('/plugins/download/:id', async (req, res) => {
+    if (!req.query.s) {res.status(400).send("No source found (use ?s=...)")}
+    else {
+        // Get result from python script
+        const pythonProcess = await spawnSync("python3", [
+            "-m", `plugins.${req.params.id}.plugin`, "DOWNLOAD", req.query.s
+        ]);
+        const result = pythonProcess.stdout?.toString()?.trim()?.split("\n\n");
+        res.status(200).send(result[result.length - 1]);
+    }
+})
+// END: Endpoints for plugins
 
 // 404 middleware
 const unknownEndpointMiddleware = (request, response) => {response.status(404).send({ error: 'unknown endpoint' })}

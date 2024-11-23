@@ -47,7 +47,10 @@ const HomePage = ({dark, displayMessage}) => {
     useEffect(refreshStatus, []);  // refresh on first render  TODO: SSE
 
     const increaseSeconds = () => {
-        if (isPlaying && isResumed) {
+        if (timestamp >= endTime) {
+            setIsPlaying(false)
+            setIsResumed(false)
+        } else if (isPlaying && isResumed) {
             const interval = setTimeout(() => setTimestamp(timestamp + 1), 1000)
             return () => {clearInterval(interval)}
         }

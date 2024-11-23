@@ -5,8 +5,9 @@ import json
 
 SINGLE_TYPES = ["movie", "video", "song"]
 SERIES_TYPES = ["tv", "album", "podcast"]
-ROOT_PATH = os.path.abspath(os.path.join(os.path.abspath(__file__), os.pardir, os.pardir, "root"))
+ROOT_PATH = os.path.abspath(os.path.join(os.path.abspath(__file__), os.pardir, os.pardir, os.pardir, "root"))
 DIRECTORY_PATH = os.path.join(ROOT_PATH, "directory.json")
+
 
 def add_json(json_path, data):
     if not os.path.exists(DIRECTORY_PATH):
@@ -18,6 +19,7 @@ def add_json(json_path, data):
             file.truncate()
         with open(json_path, 'a') as file:
             file.write(","+json.dumps(data, separators=(',', ':'))+"]")
+
 
 def add_single(media_type, title, image, release, quality, language, details, path):
     # Verify all are strings
@@ -38,8 +40,9 @@ def add_single(media_type, title, image, release, quality, language, details, pa
         raise ValueError(f"file '{os.path.join(ROOT_PATH, path)}' not found")
 
     # Everything OK, create JSON object and add to directory.json
+    id_ = str(uuid.uuid4())
     new_entry = {
-        "id": str(uuid.uuid4()),
+        "id": id_,
         "type": media_type,
         "metadata": {
                 "title": title,
@@ -52,6 +55,8 @@ def add_single(media_type, title, image, release, quality, language, details, pa
         "path": path
     }
     add_json(DIRECTORY_PATH, new_entry)
+
+    return id_
 
 
 def add_series(media_type, title, image, release, quality, language, details, episodes):
@@ -82,8 +87,9 @@ def add_series(media_type, title, image, release, quality, language, details, ep
                 raise ValueError(f"file '{os.path.join(ROOT_PATH, episodes[key][key2])}' not found")
 
     # Everything OK, create JSON object and add to directory.json
+    id_ = str(uuid.uuid4())
     new_entry = {
-        "id": str(uuid.uuid4()),
+        "id": id_,
         "type": media_type,
         "metadata": {
                 "title": title,
@@ -96,3 +102,5 @@ def add_series(media_type, title, image, release, quality, language, details, ep
         "episodes": episodes
     }
     add_json(DIRECTORY_PATH, new_entry)
+
+    return id_
