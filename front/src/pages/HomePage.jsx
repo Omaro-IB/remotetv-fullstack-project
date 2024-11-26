@@ -44,7 +44,7 @@ const HomePage = ({dark, displayMessage}) => {
             displayMessage("Error getting media player status from server", -1)
         })
     }
-    useEffect(refreshStatus, []);  // refresh on first render  TODO: SSE
+    useEffect(() => {setTimeout(refreshStatus, 500)}, []);  // refresh on first render after half a second  TODO: SSE
 
     const increaseSeconds = () => {
         if (timestamp >= endTime) {

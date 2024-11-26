@@ -15,6 +15,7 @@ app.use(express.json())
 app.use(cors())
 app.disable('etag')
 const root_folder = "root"
+
 const getStatus = () => {
     const SERIES_TYPES = ["tv", "album", "podcast"]
     let status = {"playing": undefined, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined}
@@ -22,7 +23,12 @@ const getStatus = () => {
 
     // Set "playing" = info of playing media (from directory.json)
     const promise1 = mpv.getProperty("path").then(path => {
-        let library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+        let library
+        try {
+            library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+        } catch {
+            library = []
+        }
 
         // Find the media that is playing, and its season/episode (if relevant) from path
         for (const media of  library) {
@@ -60,7 +66,7 @@ const getStatus = () => {
     return new Promise((resolve) => {
         Promise.all([promise1, promise2, promise3, promise4, promise5]).then(() => {
             if (no_catches) {resolve(status)}
-            else {resolve({"playing": false, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined})}
+            else {resolve({"playing": false})}
         })
     })
 }
@@ -80,6 +86,11 @@ app.get('/init', (req, res) => {
 
 // List library
 app.get('/ls/', (req, res) => {
+    if (! fs.existsSync(join(root_folder, "directory.json"))) {
+        res.status(200).json([])
+        return
+    }
+
     try {
       let library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
       res.status(200).json(library)
@@ -100,9 +111,15 @@ app.get('/status', (req, res) => {
 // BEGIN: Endpoints for controls
 // Load a file
 app.get('/load/:id', (req, res) => {
-  let directory = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+  let directory
+  try {
+      directory = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+  } catch {
+      res.status(404).send("No library data found")
+      return
+  }
   let filePath = directory.find(value => value.id === req.params.id).path
-  if (filePath === undefined) {res.status(404).send({error: `ID ${req.params.id} not found`}); return}
+  if (filePath === undefined) {res.status(404).send(`ID ${req.params.id} not found`); return}
 
   mpv.load(join(root_folder, filePath)).then(() => {
     res.status(200).send(`Successfully loaded id /${req.params.id}`)
@@ -114,7 +131,13 @@ app.get('/load/:id', (req, res) => {
 })
 
 app.get('/load/:id/:season/:episode', (req, res) => {
-  let directory = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+  let directory
+  try {
+      directory = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+  } catch {
+      res.status(404).send("No library data found")
+      return
+  }
   let filePath = directory.find(value => value.id === req.params.id).episodes[req.params.season][req.params.episode]
   if (filePath === undefined) {res.status(404).send({error: `ID ${req.params.id} not found`}); return}
 

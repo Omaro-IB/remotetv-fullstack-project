@@ -46,7 +46,7 @@ const Navbar = ({dark, page, toggleDark}) => {
                         <p>Multiple people can control the TV at the same time, and only need to be connected to your home network.</p>
                         <h2 className={"text-3xl font-bold mt-4"}>Source Code / Report Bugs</h2>
                         <a href="https://github.com/Omaro-IB/remotetv-fullstack-project" className={dark? "text-dark-primary underline" : "text-primary underline"}>https://github.com/Omaro-IB/remotetv-fullstack-project</a>
-                        <p className={"mt-10 opacity-70"}> Copyright (C) 2024 Free Software Foundation, Inc. https://fsf.org/</p>
+                        <p className={"mt-10 opacity-70"}> Copyright © {new Date().getFullYear()} Free Software Foundation, Inc. https://fsf.org/</p>
                     </div>
                 </div>
             </div>
