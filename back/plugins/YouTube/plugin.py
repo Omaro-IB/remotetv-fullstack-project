@@ -17,7 +17,7 @@ INPUT = sys.argv[2]
 if OPTION not in ("SEARCH", "DOWNLOAD"):
     raise ValueError("Invalid option")
 
-# Perform search (TODO)
+# Perform search
 if OPTION == "SEARCH":
     with yt_dlp.YoutubeDL({'quiet': True, 'noplaylist': True,  'extract_flat': True}) as ydl:
             result = ydl.extract_info(f"ytsearch10:{INPUT}", download=False)
