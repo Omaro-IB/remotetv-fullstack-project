@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 import { FaXmark } from "react-icons/fa6";
 import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
 import { MdExpandMore } from "react-icons/md";
+import {HashLink} from "react-router-hash-link";
 
 const LibraryPage = ({dark, displayMessage}) => {
     const navigate = useNavigate()
@@ -25,7 +26,9 @@ const LibraryPage = ({dark, displayMessage}) => {
     return (
         <div>
             <div className="flex flex-wrap mt-3 p-4">  {/* Project boxes div */}
-                {boxes.map((box) => {
+                {(boxes.length === 0) ? (<div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
+                    Nothing here yet. Go to <span className={dark? "text-dark-primary underline" : "text-primary underline"}><HashLink to="/search">search</HashLink></span> to add something to your library
+                </div>) : boxes.map((box) => {
                     if (box.id === undefined) {return <div></div>}
                     if (box.metadata === undefined) {return <div></div>}
                     const image = (box.metadata.image === undefined) ? 'url(/unknown_img.png)' : `url(${box.metadata.image})`

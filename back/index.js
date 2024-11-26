@@ -84,7 +84,8 @@ app.get('/ls/', (req, res) => {
       let library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
       res.status(200).json(library)
     } catch (error) {
-      res.status(500).send("Unexpected error loading directory.json")
+      console.log(error)
+      res.status(500).send("Unexpected error loading directory.json; see logs for more details")
     }
 })
 
@@ -194,7 +195,7 @@ app.get('/plugins/thumbnail/:id', (req, res) => {
 
     res.sendFile(join("plugins", req.params.id, "thumbnail.png"), options, function (err) {
         if (err) {
-            res.status(404).send(`plugin "${req.params.id}" not found`)
+            res.status(404).send(`plugin "${req.params.id}" not found or has no thumbnail`)
         }
     });
 });
@@ -204,9 +205,18 @@ app.get('/plugins/search/:id', async (req, res) => {
     else {
         // Get result from python script
         const pythonProcess = await spawnSync("python3", [
-            "-m", `plugins.${req.params.id}.plugin`, "SEARCH", req.query.p
+            "-m", `plugins.${req.params.id}.plugin`, "SEARCH", req.query.q
         ]);
-        res.status(200).send(pythonProcess.stdout?.toString()?.trim()?.split("\n"));
+        try {
+            const result = (pythonProcess.stdout?.toString().trim()?.split("\n"))
+            const labels = JSON.parse(result[0])
+            const sources = JSON.parse(result[1])
+            const finalJson = labels.map((label, idx) => ({"label": label, "source": sources[idx]}))
+            res.status(200).json(finalJson)
+        } catch (error) {
+            console.log(error);
+            res.status(500).send("Error parsing result from plugin; see logs for more details.")
+        }
     }
 })
 

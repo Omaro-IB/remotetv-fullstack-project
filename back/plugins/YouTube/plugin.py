@@ -7,6 +7,7 @@ Usage:
 import yt_dlp
 import os
 import requests
+import json
 # Boilerplate
 import plugins.core.directory
 import sys
@@ -18,7 +19,24 @@ if OPTION not in ("SEARCH", "DOWNLOAD"):
 
 # Perform search (TODO)
 if OPTION == "SEARCH":
-    print("Result1\nResult2\nResult3")
+    with yt_dlp.YoutubeDL({'quiet': True, 'noplaylist': True,  'extract_flat': True}) as ydl:
+            result = ydl.extract_info(f"ytsearch10:{INPUT}", download=False)
+
+            # Extract video links
+            urls = [entry['url'] for entry in result['entries']]
+            titles = [entry['title'] for entry in result['entries']]
+
+            sources = []
+            labels = []
+            for i in range(len(urls)):
+                if "?v=" not in urls[i]:
+                    continue
+                else:
+                    sources.append(urls[i].split("?v=")[1])
+                    labels.append(titles[i])
+
+            print(json.dumps(labels))
+            print(json.dumps(sources))
 
 # Download video
 elif OPTION == "DOWNLOAD":

@@ -11,6 +11,23 @@ const getLibrary = () => {
     return request.then(response => response.data)
 }
 
+const getPlugins = () => {
+    const request = axios.get(`${baseUrl}/plugins`)
+    return request.then(response => response.data)
+}
+
+const searchPlugin = (pluginID, query) => {
+    const request = axios.get(`${baseUrl}/plugins/search/${pluginID}?q=${query}`)
+    return request.then(response => response.data)
+}
+
+const downloadPlugin = (pluginID, source) => {
+    const request = axios.get(`${baseUrl}/plugins/download/${pluginID}?s=${source}`)
+    return request.then(response => response.data)
+}
+
+const pluginThumbnail = (plugin) => (`${baseUrl}/plugins/thumbnail/${plugin}`)
+
 const playByID = (id) => {
     const request = axios.get(`${baseUrl}/load/${id}`)
     return new Promise((resolve, reject) => {
@@ -69,4 +86,4 @@ const timestamp = (timestamp) => {
     return axios.get(`${baseUrl}/timestamp/${timestamp}`)
 }
 
-export default {getLibrary, playByID, playTVByID, playPause, getStatus, stop, volume, timestamp}
+export default {getLibrary, getPlugins, searchPlugin, downloadPlugin, pluginThumbnail, playByID, playTVByID, playPause, getStatus, stop, volume, timestamp}

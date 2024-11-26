@@ -46,7 +46,7 @@ const App = () => {
         <div className={rootClassName}>
             <Navbar dark={dark} page={"Search"} toggleDark={toggleDark}/>
             <div className={(errorMessage === "") ? "hidden" : ""}><ErrorBar dark={dark} message={errorMessage}/></div>
-            <SearchPage dark={dark}/>
+            <SearchPage dark={dark} displayMessage={displayMessage}/>
         </div>)
 
     return (
