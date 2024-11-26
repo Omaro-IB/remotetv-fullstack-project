@@ -9,8 +9,10 @@ Alternative Smart TV built on MPV, React, and NodeJS
  - [X] Use [PM2](https://stackoverflow.com/questions/5999373/how-do-i-prevent-node-js-from-crashing-try-catch-doesnt-work) to stop crashes
 
 ### Frontend
- - [ ] Finish search page (1. Select Source, 2. Search for something, 3. Select an option to download)
-	- [ ] Upload in "Select Source": Option to add to existing TV/Album/Podcast - or save as new Movie/Video/Song/TV/Album/Podcast - once selected ask user to input details (metadata, etc.), upload to server files, and add to directory.json
+ - [X] Finish search page (1. Select Source, 2. Search for something, 3. Select an option to download)
+    - [X] Download as new Movie/Video/Song/TV/Album/Podcast
+	- [ ] Download - add to existing TV/Album/Podcast - once selected ask user to select which TV/Album/Podcast and input details (episode, metadata, etc.)
+	- [ ] Source option to upload from user's computer with same download options ^^
  - [ ] Sort by and filters for library
  - [X] Episode selector for TV shows
  - [X] Handle cases where directory.json is formatted incorrectly
@@ -24,6 +26,7 @@ Alternative Smart TV built on MPV, React, and NodeJS
   - [X] Player should assume 1 second passes every second if playing / no seconds are passing if paused if no SSE)
 
 #### Plugins
+ - [ ] An OPTION to add to existing TV/Album/Podcast after downloading
  - [X] Python module for plugins to use to register downloaded files
  - [X] Endpoint to get list of plugins: `/plugins` which returns a list of the directory names of all the plugins (which will act as a natural unique ID to reference plugins). Organization should be as follows:
 	 - `plugins`
