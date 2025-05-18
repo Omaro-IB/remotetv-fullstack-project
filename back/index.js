@@ -31,7 +31,7 @@ const getStatus = () => {
         }
 
         // Find the media that is playing, and its season/episode (if relevant) from path
-        for (const media of  library) {
+        for (const media of library) {
             if (!(SERIES_TYPES.includes(media.type))) {if (join(__dirname, root_folder, media.path) === path) {status["playing"] = media; break}}
             else {
                 for (const s of Object.keys(media.episodes)) {
@@ -85,19 +85,32 @@ app.get('/init', (req, res) => {
 })
 
 // List library
-app.get('/ls/', (req, res) => {
-    if (! fs.existsSync(join(root_folder, "directory.json"))) {
-        res.status(200).json([])
-        return
-    }
+// app.get('/ls/', (req, res) => {
+//     if (! fs.existsSync(join(root_folder, "directory.json"))) {
+//         res.status(200).json([])
+//         return
+//     }
+//
+//     try {
+//       let library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
+//       res.status(200).json(library)
+//     } catch (error) {
+//       console.log(error)
+//       res.status(500).send("Unexpected error loading directory.json; see logs for more details")
+//     }
+// })
 
-    try {
-      let library = JSON.parse(fs.readFileSync(join(root_folder, "directory.json"), 'utf8'))
-      res.status(200).json(library)
-    } catch (error) {
-      console.log(error)
-      res.status(500).send("Unexpected error loading directory.json; see logs for more details")
-    }
+// List library
+app.get('/ls', (req, res) => {
+    let q = [root_folder]
+
+    fs.readdir(path, function(err, items) {
+        console.log(items);
+
+        for (var i=0; i<items.length; i++) {
+            console.log(items[i]);
+        }
+    });
 })
 
 // Get current playing filename

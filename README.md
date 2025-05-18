@@ -14,6 +14,7 @@ Alternative Smart TV built on MPV, React, and NodeJS
 	- [ ] Download - add to existing TV/Album/Podcast - once selected ask user to select which TV/Album/Podcast and input details (episode, metadata, etc.)
 	- [ ] Source option to upload from user's computer with same download options ^^
  - [ ] Sort by and filters for library
+ - [ ] Delete from library
  - [X] Episode selector for TV shows
  - [X] Handle cases where directory.json is formatted incorrectly
  - [X] Favicon 
@@ -21,12 +22,14 @@ Alternative Smart TV built on MPV, React, and NodeJS
  - [X] Home page (prompt for search / browse library) and info button (copyright + how to use it + GitHub link)
 
 ### Backend
+  - [ ] Endpoint to delete something
   - [ ] Endpoint to upload files to server from computer (/uploadsingle and /uploadseries) with JSON of information + the actual file as payload
   - [ ] Use Server-Sent Events (SSE) (see [events.odt]) to update users' media player if any changes are made from another device
   - [X] Player should assume 1 second passes every second if playing / no seconds are passing if paused if no SSE)
 
 #### Plugins
  - [ ] An OPTION to add to existing TV/Album/Podcast after downloading
+ - [ ] Endpoint to download series and add to existing 
  - [X] Python module for plugins to use to register downloaded files
  - [X] Endpoint to get list of plugins: `/plugins` which returns a list of the directory names of all the plugins (which will act as a natural unique ID to reference plugins). Organization should be as follows:
 	 - `plugins`
