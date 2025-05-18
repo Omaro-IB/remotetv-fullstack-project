@@ -70,7 +70,6 @@ const HomePage = ({dark, displayMessage}) => {
                     <p className={"text-left text-2xl sm:text-4xl"}> Nothing currently playing... </p>
                     <p className={"text-left text-xl sm:text-2xl"}>
                         Go to <span className={dark? "text-dark-primary underline" : "text-primary underline"}><HashLink to="/library">library</HashLink></span> to select something to play
-                        or to <span className={dark? "text-dark-primary underline" : "text-primary underline"}><HashLink to="/search">search</HashLink></span> to add something to your library
                     </p>
                 </div>
             </div>

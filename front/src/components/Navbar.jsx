@@ -26,8 +26,6 @@ const Navbar = ({dark, page, toggleDark}) => {
                                      text={"TV Remote"}></NavbarLink></HashLink>
         <HashLink to="/library"><NavbarLink dark={dark} strikethrough={page === "Library"}
                                             text={"Library"}></NavbarLink></HashLink>
-        <HashLink to="/search"><NavbarLink dark={dark} strikethrough={page === "Search"}
-                                           text={"Search"}></NavbarLink></HashLink>
 
         {/* Information screen */}
         <div className={displayInfo ? "absolute top-0 right-0 w-screen h-screen z-50" : "hidden"}>

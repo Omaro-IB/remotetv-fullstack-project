@@ -15,27 +15,6 @@ const getLibrary = () => {
     return request.then(response => response.data)
 }
 
-// GET /plugins to get plugins data
-const getPlugins = () => {
-    const request = axios.get(`${baseUrl}/plugins`)
-    return request.then(response => response.data)
-}
-
-// GET /plugins/search/:pluginID?q=<query> to search using some plugin
-const searchPlugin = (pluginID, query) => {
-    const request = axios.get(`${baseUrl}/plugins/search/${pluginID}?q=${query}`)
-    return request.then(response => response.data)
-}
-
-// GET /plugins/download/:pluginID?s=<source> to download using some plugin
-const downloadPlugin = (pluginID, source) => {
-    const request = axios.get(`${baseUrl}/plugins/download/${pluginID}?s=${source}`)
-    return request.then(response => response.data)
-}
-
-// Returns IP of a plugin's thumbnail
-const pluginThumbnail = (plugin) => (`${baseUrl}/plugins/thumbnail/${plugin}`)
-
 // GET /load/:mediaID to play a single media
 const playByID = (id) => {
     const request = axios.get(`${baseUrl}/load/${id}`)
@@ -101,4 +80,4 @@ const timestamp = (timestamp) => {
     return axios.get(`${baseUrl}/timestamp/${timestamp}`)
 }
 
-export default {getLibrary, getPlugins, searchPlugin, downloadPlugin, pluginThumbnail, playByID, playTVByID, playPause, getStatus, stop, volume, timestamp}
+export default {getLibrary, playByID, playTVByID, playPause, getStatus, stop, volume, timestamp}

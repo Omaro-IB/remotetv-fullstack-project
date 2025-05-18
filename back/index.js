@@ -16,12 +16,14 @@ app.use(cors())
 app.disable('etag')
 const root_folder = "root"
 
+
+
 const getStatus = () => {
     const SERIES_TYPES = ["tv", "album", "podcast"]
     let status = {"playing": undefined, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined}
     let no_catches = true
 
-    // Set "playing" = info of playing media (from directory.json)
+    // Set "playing" = info of playing media (from directory.json)  TODO: get library from
     const promise1 = mpv.getProperty("path").then(path => {
         let library
         try {
@@ -198,63 +200,6 @@ app.get('/timestamp/:timestamp', (req, res) => {
     })
 })
 // END: Endpoints for controls
-
-// BEGIN: Endpoints for plugins
-app.get('/plugins', (req, res) => {
-    fs.readdir("plugins", (err, files) => {
-        if (err) {
-            res.status(500).send("Error getting plugin info, see logs for more details.")
-            console.log(err);
-        } else {
-            res.status(200).json(files.filter(x => (x !== ".idea" && x !== "__init__.py" && x !== "__pycache__" && x !== "core")))
-        }
-    });
-})
-
-app.get('/plugins/thumbnail/:id', (req, res) => {
-    const options = {
-        root: join(__dirname)
-    };
-
-    res.sendFile(join("plugins", req.params.id, "thumbnail.png"), options, function (err) {
-        if (err) {
-            res.status(404).send(`plugin "${req.params.id}" not found or has no thumbnail`)
-        }
-    });
-});
-
-app.get('/plugins/search/:id', async (req, res) => {
-    if (!req.query.q) {res.status(400).send("No query found (use ?q=...)")}
-    else {
-        // Get result from python script
-        const pythonProcess = await spawnSync("python3", [
-            "-m", `plugins.${req.params.id}.plugin`, "SEARCH", req.query.q
-        ]);
-        try {
-            const result = (pythonProcess.stdout?.toString().trim()?.split("\n"))
-            const labels = JSON.parse(result[0])
-            const sources = JSON.parse(result[1])
-            const finalJson = labels.map((label, idx) => ({"label": label, "source": sources[idx]}))
-            res.status(200).json(finalJson)
-        } catch (error) {
-            console.log(error);
-            res.status(500).send("Error parsing result from plugin; see logs for more details.")
-        }
-    }
-})
-
-app.get('/plugins/download/:id', async (req, res) => {
-    if (!req.query.s) {res.status(400).send("No source found (use ?s=...)")}
-    else {
-        // Get result from python script
-        const pythonProcess = await spawnSync("python3", [
-            "-m", `plugins.${req.params.id}.plugin`, "DOWNLOAD", req.query.s
-        ]);
-        const result = pythonProcess.stdout?.toString()?.trim()?.split("\n\n");
-        res.status(200).send(result[result.length - 1]);
-    }
-})
-// END: Endpoints for plugins
 
 // 404 middleware
 const unknownEndpointMiddleware = (request, response) => {response.status(404).send({ error: 'unknown endpoint' })}

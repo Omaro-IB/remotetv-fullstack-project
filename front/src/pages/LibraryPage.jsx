@@ -27,7 +27,7 @@ const LibraryPage = ({dark, displayMessage}) => {
         <div>
             <div className="flex flex-wrap mt-3 p-4">  {/* Project boxes div */}
                 {(boxes.length === 0) ? (<div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
-                    Nothing here yet. Go to <span className={dark? "text-dark-primary underline" : "text-primary underline"}><HashLink to="/search">search</HashLink></span> to add something to your library
+                    Nothing here yet.
                 </div>) : boxes.map((box) => {
                     if (box.id === undefined) {return <div></div>}
                     if (box.metadata === undefined) {return <div></div>}
