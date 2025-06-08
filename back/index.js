@@ -43,27 +43,27 @@ const getStatus = () => {
                     if (media["item"]["path"] === media_path) {status["playing"] = media; break}
                 }
             }
-    }).catch((e) => {console.log(e); no_catches = false})
+    }).catch((e) => {no_catches = false})
 
     // Set "resumed" = true/false
     const promise2 = mpv.getProperty("core-idle").then(idle => {
         status["resumed"] = !idle
-    }).catch((e) => {console.log(e); no_catches = false})
+    }).catch((e) => {no_catches = false})
 
     // Set "time" = integer time
     const promise3 = mpv.getProperty("time-pos").then(time => {
         status["time"] = time
-    }).catch((e) => {console.log(e); no_catches = false})
+    }).catch((e) => {no_catches = false})
 
     // Set "endTime" = integer time
     const promise4 = mpv.getProperty("duration").then(endTime => {
         status["endTime"] = endTime
-    }).catch((e) => {console.log(e); no_catches = false})
+    }).catch((e) => {no_catches = false})
 
     // Set "volume" = integer volume
     const promise5 = mpv.getProperty("ao-volume").then(volume => {
         status["volume"] = volume
-    }).catch((e) => {console.log(e); no_catches = false})
+    }).catch((e) => {no_catches = false})
 
     return new Promise((resolve) => {
         Promise.all([promise1, promise2, promise3, promise4, promise5]).then(() => {
