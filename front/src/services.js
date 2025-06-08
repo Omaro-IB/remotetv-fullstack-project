@@ -15,7 +15,7 @@ const getLibrary = () => {
     return request.then(response => response.data)
 }
 
-// GET /load/:mediaID to play a single media
+// GET /load/:mediaID to play a media
 const playByID = (id) => {
     const request = axios.get(`${baseUrl}/load/${id}`)
     return new Promise((resolve, reject) => {
@@ -26,26 +26,6 @@ const playByID = (id) => {
                         initMPV();  // then try init-ing MPV
                         setTimeout(() => {  // then half a second later try request again
                             axios.get(`${baseUrl}/load/${id}`).then(() => resolve()).catch(() => reject())
-                        }, 500);
-                    } else {
-                        reject();  // if not 500 error, then something else went wrong, and just reject the promise
-                    }
-                }
-            )
-    })
-}
-
-// GET /load/:mediaID/:season/:episode to play a series media
-const playTVByID = (id, season, episode) => {
-    const request = axios.get(`${baseUrl}/load/${id}/${season}/${episode}`)
-    return new Promise((resolve, reject) => {
-        request
-            .then(() => resolve())  // if request succeeds, then resolve promise
-            .catch((error) => {  // if not...
-                    if (error.response.status === 401) {  // if 401 error (MPV not started), ...
-                        initMPV();  // then try init-ing MPV
-                        setTimeout(() => {  // then half a second later try request again
-                            axios.get(`${baseUrl}/load/${id}/${season}/${episode}`).then(() => resolve()).catch(() => reject())
                         }, 500);
                     } else {
                         reject();  // if not 500 error, then something else went wrong, and just reject the promise
@@ -80,4 +60,13 @@ const timestamp = (timestamp) => {
     return axios.get(`${baseUrl}/timestamp/${timestamp}`)
 }
 
-export default {getLibrary, playByID, playTVByID, playPause, getStatus, stop, volume, timestamp}
+// Image URL
+const getImgUrl = (img, i0, i1, i2) => {
+    if (i1 === undefined || i2 === undefined) {
+        return `${baseUrl}/image/${img}/${i0},${i1},${i2}`
+    } else {
+        return `${baseUrl}/image/${img}/${i0}`
+    }
+}
+
+export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl}

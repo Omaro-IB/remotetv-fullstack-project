@@ -1,5 +1,5 @@
 import Slider from '@mui/material/Slider';
-import {FaPause, FaPlay, FaForward, FaBackward, FaVolumeDown} from "react-icons/fa";
+import {FaPause, FaPlay, FaForward, FaBackward, FaVolumeDown, FaAngleRight} from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 
 const Container = ({children, dark}) => (
@@ -26,14 +26,16 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
             <div className={"mb-4 grid grid-cols-2"}>
                 <div className={"w-32 h-32 overflow-hidden rounded-lg shadow-lg"}>
                     <img
-                        alt={`${title} Poster`}
+                        alt={`Image for ${title}`}
                         src={img}
                     />
                 </div>
                 <div className={"text-left h-32 overflow-scroll"}>
-                    <strong>{title}</strong>
+                    <strong className={"text-lg"}>{title}</strong>
                     <div className={(season === undefined || episode === undefined) ? "hidden" : ""}>
-                        <p className={"italic"}>{(season === undefined || episode === undefined) ? "" : `Season ${season} Episode ${episode}`}</p>
+                        <p>{season}</p>
+                        <FaAngleRight className={"inline ml-0.5"}></FaAngleRight><p className={"text-sm inline"}>{episode}</p>
+                        {/*<p>{(season === undefined || episode === undefined) ? "" : `${season} x ${episode}`}</p>*/}
                     </div>
                 </div>
             </div>

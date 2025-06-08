@@ -11,9 +11,11 @@ const HomePage = ({dark, displayMessage}) => {
     const [endTime, setEndTime] = useState(0);
     const [volume, setVolume] = useState(0);
     const [title, setTitle] = useState("Loading...");
-    const [image, setImage] = useState("");
-    const [season, setSeason] = useState(undefined);
-    const [episode, setEpisode] = useState(undefined);
+    const [group, setGroup] = useState(undefined);
+    const [item, setItem] = useState(undefined);
+    const [image, setImage] = useState("");  // TODO
+    const [sub, setSub] = useState("");  // TODO
+    const [quality, setQuality] = useState("");  // TODO
 
     // Media Control API Calls
     const pausePlayClick = () => {services.playPause().then(_ => setIsResumed(!isResumed)).catch(_ => displayMessage("Error playing/pausing", 2000)) }
@@ -26,16 +28,27 @@ const HomePage = ({dark, displayMessage}) => {
     // Refresh Status on First Refresh + SSEs
     const refreshStatus = () => {
         services.getStatus().then(status => {
+            console.log(status)
+
             if (!(status.data["playing"] === false)) {
                 setIsPlaying(true)
-                setTitle(status.data["playing"]["metadata"]["title"])
-                setImage(status.data["playing"]["metadata"]["image"])
+                setTitle(status.data["playing"]["name"])
                 setIsResumed(status.data["resumed"])
                 setTimestamp(status.data["time"])
                 setEndTime(status.data["endTime"])
                 setVolume(status.data["volume"])
-                setSeason(status.data["season"])
-                setEpisode(status.data["episode"])
+
+                let thisItem
+                if ('items' in status.data["playing"]) {  // collection
+                    setGroup(status.data["playing"]["group_labels"][status.data["group"]])
+                    setItem(status.data["playing"]["item_labels"][status.data["group"]][status.data["item"]])
+                    thisItem = status.data["playing"]["items"][status.data["group"]][status.data["item"]]
+                } else {  // single
+                    thisItem = status.data["playing"]["item"]
+                }
+                setImage(thisItem["img"] === undefined ? "" : thisItem["img"])
+                setSub(thisItem["sub"] === undefined ? "" : thisItem["sub"])
+                setQuality(thisItem["quality"] === undefined ? "" : thisItem["quality"])
             } else {
                 setIsPlaying(false)
             }
@@ -62,7 +75,7 @@ const HomePage = ({dark, displayMessage}) => {
             <div className={!isPlaying ? "hidden" : ""}>
                 <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed}
                          pausePlayClick={pausePlayClick} volume={volume} onSetVolume={onSetVolume} title={title} img={image}
-                         forwardClick={forwardClick} backClick={backClick} stopClick={stopClick} season={season} episode={episode}/>
+                         forwardClick={forwardClick} backClick={backClick} stopClick={stopClick} season={group} episode={item}/>
             </div>
             {/*  Info component - displayed if !isPlaying */}
             <div className={isPlaying ? "hidden" : ""}>

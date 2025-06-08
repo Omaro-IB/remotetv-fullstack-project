@@ -33,14 +33,21 @@ const item_schema = Joi.object().keys({
     img: filepath_schema.optional(),
     sub: filepath_schema.optional(),
     text: Joi.string().optional(),
+    release: Joi.number().optional(),
     quality: Joi.string().optional(),
-    duration: Joi.number().optional()
+    language: Joi.string().optional()
 })
 
 // Validate collection object (NAME, PATHS TO EACH EPISODE, METADATAS OF EACH EPISODE)
 const collections_schema = Joi.object({
     name: Joi.string(),
-    items: Joi.array().items(Joi.array().items(item_schema)),
+    items: Joi.array().items(Joi.array().items(item_schema).min(1)).min(1),
+    group_labels: Joi.array().items(Joi.string()).min(1),
+    item_labels: Joi.array().items(Joi.array().items(Joi.string()).min(1)).min(1)
+}).custom((value, helpers) => {
+    const {items: it, group_labels: gl, item_labels: il} = value
+    if (gl.length !== it.length) {return helpers.error('any.invalid', {message: 'Group labels must have same number of elements as the number of groups'})}
+    for (const [gr, gr_i] of it.entries()) {if (gr.length !== il[gr_i].length) {return helpers.error('any.invalid', {message: 'Item labels must have same number of elements as the number of items in each corresponding group'})}}
 })
 
 // Validate single object (NAME, PATH TO FILE, METADATA)
