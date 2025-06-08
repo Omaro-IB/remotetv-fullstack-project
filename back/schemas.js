@@ -45,9 +45,11 @@ const collections_schema = Joi.object({
     group_labels: Joi.array().items(Joi.string()).min(1),
     item_labels: Joi.array().items(Joi.array().items(Joi.string()).min(1)).min(1)
 }).custom((value, helpers) => {
+    // group_labels length must equal # of groups and item_labels lengths must equal # of items in each group
     const {items: it, group_labels: gl, item_labels: il} = value
     if (gl.length !== it.length) {return helpers.error('any.invalid', {message: 'Group labels must have same number of elements as the number of groups'})}
-    for (const [gr, gr_i] of it.entries()) {if (gr.length !== il[gr_i].length) {return helpers.error('any.invalid', {message: 'Item labels must have same number of elements as the number of items in each corresponding group'})}}
+    for (let gr_i = 0; gr_i < it.length; gr_i++) {if (it[gr_i].length !== il[gr_i].length) {return helpers.error('any.invalid', {message: 'Item labels must have same number of elements as the number of items in each corresponding group'})}}
+    return value
 })
 
 // Validate single object (NAME, PATH TO FILE, METADATA)
@@ -59,4 +61,4 @@ const singles_schema = Joi.object({
 // Validate library object (list of singles / collections objects)
 const library_schema = Joi.array().items(Joi.alternatives().try(collections_schema, singles_schema))
 
-export { collections_schema, singles_schema, dir_schema, filepath_schema, library_schema }
+export { collections_schema, singles_schema, dir_schema, filepath_schema, library_schema, item_schema }

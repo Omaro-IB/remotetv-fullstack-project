@@ -12,7 +12,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
     library_dirs.forEach(dir => {
         try {
             const lib_i = JSON.parse(fs.readFileSync(dir, 'utf8'))
-            const {lib_error} = library_schema.validate(lib_i)
+            const {error: lib_error} = library_schema.validate(lib_i)
             if (lib_error) {errors.push(`${dir} is not a valid JSON library file`)}
             else {library.push(...lib_i)}
         } catch {
