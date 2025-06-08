@@ -3,6 +3,10 @@ Alternative Smart TV built on MPV, React, and NodeJS
 
 ## TODO
 ### Basics
+ - [ ] Install, setup, and maintenance documentation
+   - [ ] Document backend CLI usage
+   - [ ] Document JSON library structure
+   - [ ] Document file structure for automatic scanning
  - [X] Design UI
  - [X] Create UI using React with basic player functionality
  - [X] Finish API for interacting with MPV player completely
@@ -10,20 +14,32 @@ Alternative Smart TV built on MPV, React, and NodeJS
 
 ### Frontend
  - [ ] Sort by and filters for library
+ - [ ] Scanner page
+   - [ ] Errors: file paths that cannot be parsed (ex. ambiguous season number)
+   - [ ] Warnings: missing non-critical information (ex. unknown metadata) 
+   - [ ] Rescan library button
+   - [ ] Option to auto rescan every $n$ minutes
+ - [ ] Subtitle button for media player
  - [X] Episode selector for TV shows
- - [X] Handle cases where directory.json is formatted incorrectly
  - [X] Favicon 
  - [X] Make media player look nicer
- - [X] Home page (prompt for search / browse library) and info button (copyright + how to use it + GitHub link)
+ - [X] Home page and info button
 
 ### Backend
- - [ ] Library detection should be from files in root folder (remove need for directory.json)
- - [ ] Endpoint to upload files to server from computer (/uploadsingle and /uploadseries)
+ - [X] Refactor codebase to support rescanning (using library in-memory instead of reading JSON file each time)
+ - [ ] Library scanner
+ - [X] Endpoint to rescan library - should update library in memory as well as errors/warnings
+ - [ ] Endpoint to toggle subtitles
  - [ ] Use Server-Sent Events (SSE) (see [events.odt]) to update users' media player if any changes are made from another device
- - [X] Player should assume 1 second passes every second if playing / no seconds are passing if paused if no SSE)
+ - [X] Player should assume (when no SSE events are sent) that 1 second passes every second if playing / no seconds are passing if paused
  
-### Extra Stuff
- - [ ] Implement streaming support (everything works the same except instead of "download", its "stream" and just plays the stream immediately
+### Setup
+ - [ ] Easy way to specify single and series folder for scanner to search
  - [ ] Create an "installer" for Windows (.bat script), Linux (.sh), and Mac (also .sh) with clear and short steps 
- - [ ] History functionality - have it display last-played in home page or a recommendation system based on frequency or something
+
+### Extra Stuff
  - [ ] Under Info - more button that redirects to /info page with troubleshooting and FAQ
+ - [ ] User experience: history, suggestions, random playback, favorites, playlists
+
+### Known bugs
+ - [ ] Initializing mpv (`/init/`) after manually terminating MPV on the server results in a crash
