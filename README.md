@@ -19,7 +19,7 @@ Alternative Smart TV built on MPV, React, and NodeJS
    - [ ] Warnings: missing non-critical information (ex. unknown metadata) 
    - [ ] Rescan library button
    - [ ] Option to auto rescan every $n$ minutes
- - [ ] Subtitle button for media player
+ - [X] Subtitle button for media player
  - [X] Episode selector for TV shows
  - [X] Favicon 
  - [X] Make media player look nicer
@@ -29,12 +29,12 @@ Alternative Smart TV built on MPV, React, and NodeJS
  - [X] Refactor codebase to support rescanning (using library in-memory instead of reading JSON file each time)
  - [ ] Library scanner
  - [X] Endpoint to rescan library - should update library in memory as well as errors/warnings
- - [ ] Endpoint to toggle subtitles
+ - [X] Endpoint to toggle subtitles
  - [ ] Use Server-Sent Events (SSE) (see [events.odt]) to update users' media player if any changes are made from another device
  - [X] Player should assume (when no SSE events are sent) that 1 second passes every second if playing / no seconds are passing if paused
  
 ### Setup
- - [ ] Easy way to specify single and series folder for scanner to search
+ - [X] Easy way to specify single and series folder for scanner to search
  - [ ] Create an "installer" for Windows (.bat script), Linux (.sh), and Mac (also .sh) with clear and short steps 
 
 ### Extra Stuff
