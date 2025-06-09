@@ -13,9 +13,9 @@ const HomePage = ({dark, displayMessage}) => {
     const [title, setTitle] = useState("Loading...");
     const [group, setGroup] = useState(undefined);
     const [item, setItem] = useState(undefined);
-    const [image, setImage] = useState("");  // TODO
-    const [sub, setSub] = useState("");  // TODO
-    const [quality, setQuality] = useState("");  // TODO
+    const [image, setImage] = useState("");
+    const [sub, setSub] = useState("");
+    const [details, setDetails] = useState("");
 
     // Media Control API Calls
     const pausePlayClick = () => {services.playPause().then(_ => setIsResumed(!isResumed)).catch(_ => displayMessage("Error playing/pausing", 2000)) }
@@ -24,6 +24,7 @@ const HomePage = ({dark, displayMessage}) => {
     const forwardClick = () => {services.timestamp(Math.min(endTime, timestamp + 10)).then(_ => setTimestamp(Math.min(endTime, timestamp + 10))).catch(_ => displayMessage("Error skipping forward", 2000))}
     const onSetVolume = (v) => {services.volume(v).then(_ => setVolume(v)).catch(_ => displayMessage("Error changing volume", 2000))}
     const onSetTimestamp = (t) => {services.timestamp(t).then(_ => setTimestamp(t)).catch(_ => displayMessage("Error changing timestamp", 2000))}
+    const onToggleSubs = () => {services.toggleSub().catch(_ => displayMessage("Error toggling sub", 2000))}
 
     // Refresh Status on First Refresh + SSEs
     const refreshStatus = () => {
@@ -40,15 +41,20 @@ const HomePage = ({dark, displayMessage}) => {
 
                 let thisItem
                 if ('items' in status.data["playing"]) {  // collection
+                    // set collection-dependent hooks
                     setGroup(status.data["playing"]["group_labels"][status.data["group"]])
                     setItem(status.data["playing"]["item_labels"][status.data["group"]][status.data["item"]])
                     thisItem = status.data["playing"]["items"][status.data["group"]][status.data["item"]]
+                    setImage(thisItem["img"] === undefined ? "" : services.getImgUrl(status.data.id, [status.data["group"]], [status.data["item"]]))
                 } else {  // single
+                    // set single-dependent hooks
                     thisItem = status.data["playing"]["item"]
+                    setImage(thisItem["img"] === undefined ? "" : services.getImgUrl(status.data.id))
                 }
-                setImage(thisItem["img"] === undefined ? "" : thisItem["img"])
+                // set general hooks
                 setSub(thisItem["sub"] === undefined ? "" : thisItem["sub"])
-                setQuality(thisItem["quality"] === undefined ? "" : thisItem["quality"])
+                setDetails(thisItem["text"] === undefined ? "" : thisItem["text"])
+
             } else {
                 setIsPlaying(false)
             }
@@ -73,9 +79,9 @@ const HomePage = ({dark, displayMessage}) => {
     return (
         <div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
             <div className={!isPlaying ? "hidden" : ""}>
-                <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed}
-                         pausePlayClick={pausePlayClick} volume={volume} onSetVolume={onSetVolume} title={title} img={image}
-                         forwardClick={forwardClick} backClick={backClick} stopClick={stopClick} season={group} episode={item}/>
+                <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed} pausePlayClick={pausePlayClick}
+                        volume={volume} onSetVolume={onSetVolume} title={title} img={image} forwardClick={forwardClick} backClick={backClick} stopClick={stopClick}
+                        season={group} episode={item} subClick={sub === "" ? null : onToggleSubs} details={details} />
             </div>
             {/*  Info component - displayed if !isPlaying */}
             <div className={isPlaying ? "hidden" : ""}>

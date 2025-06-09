@@ -24,9 +24,9 @@ const playByID = (id) => {
             .catch((error) => {  // if not...
                     if (error.response.status === 401) {  // if 401 error (MPV not started), ...
                         initMPV();  // then try init-ing MPV
-                        setTimeout(() => {  // then half a second later try request again
+                        setTimeout(() => {  // then a second later try request again
                             axios.get(`${baseUrl}/load/${id}`).then(() => resolve()).catch(() => reject())
-                        }, 500);
+                        }, 1000);
                     } else {
                         reject();  // if not 500 error, then something else went wrong, and just reject the promise
                     }
@@ -45,6 +45,11 @@ const playPause = () => {
     return axios.get(`${baseUrl}/playpause`)
 }
 
+// GET /togglesub to toggle subtitles
+const toggleSub = () => {
+    return axios.get(`${baseUrl}/togglesub`)
+}
+
 // GET /stop to stop playback
 const stop = () => {
     return axios.get(`${baseUrl}/stop`)
@@ -61,12 +66,12 @@ const timestamp = (timestamp) => {
 }
 
 // Image URL
-const getImgUrl = (img, i0, i1, i2) => {
+const getImgUrl = (i0, i1, i2) => {
     if (i1 === undefined || i2 === undefined) {
-        return `${baseUrl}/image/${img}/${i0},${i1},${i2}`
+        return `${baseUrl}/image/${i0}`
     } else {
-        return `${baseUrl}/image/${img}/${i0}`
+        return `${baseUrl}/image/${i0}/${i1}/${i2}`
     }
 }
 
-export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl}
+export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub}

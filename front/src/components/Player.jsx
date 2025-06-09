@@ -2,23 +2,32 @@ import Slider from '@mui/material/Slider';
 import {FaPause, FaPlay, FaForward, FaBackward, FaVolumeDown, FaAngleRight} from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 
-const Container = ({children, dark}) => (
+const Container = ({children, dark, below}) => (
     <div className={dark ? "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-dark-gradient1 via-dark-gradient2 to-dark-gradient3 p-8 min-h-screen h-full" : "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gradient1 via-gradient2 to-gradient3 p-8 min-h-screen h-full"}>
         <div
             className={dark ? "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-dark-surface-trans backdrop-blur-2xl" : "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-surface-trans backdrop-blur-2xl"}>
             {children}
         </div>
+        {below}
     </div>
 )
 
-export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, season, episode, stopClick, backClick, forwardClick}) {
+export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, season, episode, stopClick, backClick, forwardClick, subClick, details}) {
     function formatDuration(value) {
         const minute = Math.floor(value / 60);
         const secondLeft = Math.ceil(value - minute * 60);
         return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`;
     }
+
+    const below = (
+        <div className={details === "" ? "hidden" : "w-1/2 max-w-full mx-auto mt-10"}>
+            <h1 className={"text-2xl"}><strong>Details:</strong></h1>
+            <p className={"text-lg text-left mt-2"}>{details}</p>
+        </div>
+    )
+
     return (
-        <Container dark={dark}>
+        <Container dark={dark} below={below}>
             <div className={"mb-2 cursor-pointer flex flex-row items-center"} onClick={stopClick}>
                 <FaXmark className={dark ? "w-6 h-6 fill-error-container" : "w-6 h-6 fill-dark-error-container"} />
                 <p className={dark ? "text-sm ml-2 text-error-container" : "text-sm ml-2 text-dark-error-container"}> Stop Playback</p>
@@ -33,9 +42,8 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                 <div className={"text-left h-32 overflow-scroll"}>
                     <strong className={"text-lg"}>{title}</strong>
                     <div className={(season === undefined || episode === undefined) ? "hidden" : ""}>
-                        <p>{season}</p>
-                        <FaAngleRight className={"inline ml-0.5"}></FaAngleRight><p className={"text-sm inline"}>{episode}</p>
-                        {/*<p>{(season === undefined || episode === undefined) ? "" : `${season} x ${episode}`}</p>*/}
+                        <p className={"mt-1 italic"}>{season}</p>
+                        <FaAngleRight className={"inline ml-0.5"}></FaAngleRight><p className={"text-md inline"}>{episode}</p>
                     </div>
                 </div>
             </div>
@@ -67,7 +75,7 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                 <FaForward className={"w-8 h-8 cursor-pointer"} onClick={forwardClick}></FaForward>
             </div>
             <div className={"flex items-center justify-between gap-3"}>
-                <FaVolumeDown/>
+                <FaVolumeDown className={"m-2"}/>
                 <Slider
                     aria-label="Volume"
                     defaultValue={volume}
@@ -109,7 +117,9 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                         },
                     }))}
                 />
-                <div className={"w-2"}></div>
+                <div className={dark ? "z-10 w-12 h-12 m-1 bg-dark-primary-container p-1 rounded cursor-pointer" : "z-10 w-12 h-12 m-1 bg-primary-container p-1 rounded cursor-pointer"} onClick={subClick}>
+                    <p className={"text-sm"}>Toggle Subs</p>
+                </div>
             </div>
         </Container>
     );

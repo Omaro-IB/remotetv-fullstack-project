@@ -34,20 +34,20 @@ const LibraryPage = ({dark, displayMessage}) => {
                     // Metadata depending on collection (use first group/item) or single
                     let image; let release; let quality; let language; let details
                     if ('items' in media) {  // collection
-                        image = (media.items[0][0].img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(media.items[0][0].img, mediaIndex, 0, 0)})`
+                        image = (media.items[0][0].img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(mediaIndex, 0, 0)})`
                         release = media.items[0][0].release
                         quality = media.items[0][0].quality
                         language = media.items[0][0].language
                         details = media.items[0][0].text
                     } else { // single
-                        image = (media.item.img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(media.item.img, mediaIndex)})`
+                        image = (media.item.img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(mediaIndex)})`
                         release = media.item.release
                         quality = media.item.quality
                         language = media.item.language
                         details = media.item.text
                     }
 
-                    return(<div key={media.name} style={{backgroundImage: image}} className={dark ? "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-2xl shadow-dark-shadow rounded" : "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-xl rounded"}>
+                    return(<div key={media.id} style={{backgroundImage: image}} className={dark ? "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-2xl shadow-dark-shadow rounded" : "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-xl rounded"}>
 
                         {/* Media display */}
                         <div className={"flex flex-col mx-5 mt-5"}>
@@ -73,7 +73,7 @@ const LibraryPage = ({dark, displayMessage}) => {
                             </div>
 
                             {/* Details (text) */}
-                            <strong className={dark ? "bg-dark-surface-trans text-dark-surface-on h-24 overflow-auto" : "bg-surface-trans text-surface-on h-24 overflow-auto"}>{details}</strong>
+                            <strong className={dark ? "bg-dark-surface-trans text-dark-surface-on h-24 overflow-auto text-left p-2" : "bg-surface-trans text-surface-on h-24 overflow-auto text-left p-2"}>{details}</strong>
                         </div>
 
                         {/* Button for single (play) or collection (select to play) */}
