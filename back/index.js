@@ -7,8 +7,9 @@ import mpvAPI from 'node-mpv'
 import cors from 'cors'
 import { parseCli } from "./cli.js";
 import {createLibrary} from "./librarylib.js";
+import * as fs from 'fs';
+import * as pathlib from 'path';
 // END: Imports
-
 
 // BEGIN: App initialization
 const directories = parseCli(process.argv)
@@ -85,7 +86,7 @@ app.get('/init', (req, res) => {
     res.status(200).send("Successfully started MPV")
   }).catch((error) => {
       if (error["errcode"] === 6) {res.status(400).send("Error starting MPV; MPV is already running")}
-      else {console.log(error); res.status(500).send("Error starting MPV; See logs for more details")}
+      else {console.log('[removetv]: /init/ error log:'); console.log(error); res.status(500).send("Error starting MPV; See logs for more details")}
   })
 })
 
@@ -94,6 +95,7 @@ app.get('/ls/', (req, res) => {
     try {
       res.status(200).json(library)
     } catch (error) {
+      console.log('[removetv]: /ls/ error log:')
       console.log(error)
       res.status(500).send("Unexpected error loading directory.json; see logs for more details")
     }
@@ -109,7 +111,7 @@ app.get('/rescan/', (req, res) => {
 // Get current playing filename
 app.get('/status', (req, res) => {
     getStatus().then(status => res.status(200).json(status)).catch(error => {
-        console.log(error); res.status(500).send("Error getting status; see logs for more details")
+        console.log('[removetv]: /status/ error log:'); console.log(error); res.status(500).send("Error getting status; see logs for more details")
     })
 })
 
@@ -125,7 +127,8 @@ app.get('/image/:i0', (req, res) => {
     // Send file
     res.status(200).sendFile(img, {}, function (err) {
         if (err) {
-            console.error('Error sending file:', err);
+            console.log(`[removetv]: /image/${req.params.i0} error log:`)
+            console.log(err);
         }
     });
 })
@@ -142,7 +145,8 @@ app.get('/image/:i0/:i1/:i2', (req, res) => {
     // Send file
     res.status(200).sendFile(img, {}, function (err) {
         if (err) {
-            console.error('Error sending file:', err);
+            console.log(`[removetv]: /image/${req.params.i0}/${req.params.i1}/${req.params.i2} error log:`)
+            console.log(err);
         }
     });
 })
@@ -183,20 +187,28 @@ app.get('/load/:id', (req, res) => {
         if (path === undefined) {res.status(400).send(`invalid index for size of library`); return}
     }
 
+    // Load subtitles
+    const path_directory = pathlib.dirname(path)
+    const path_ext = pathlib.extname(path)
+    const sub_ext = pathlib.extname(sub)
+    const path_no_ext = pathlib.basename(path, path_ext)
+    const sub_new = pathlib.join(path_directory, path_no_ext + sub_ext)
+    if (fs.existsSync(sub_new)) {
+        console.log(`[remotetv]: Using subtitle file ${sub_new}`)
+    } else {
+        fs.copyFile(sub, sub_new, (err) => {
+            if (err) {console.log("[remotetv]: error log moving subtitle file"); console.log(err)}
+            else {console.log(`[remotetv]: ${sub} copied to ${sub_new}`)}
+        });
+    }
+
     // Load path
     mpv.load(path).then(() => {
         res.status(200).send(`Successfully loaded id /${req.params.id}`);
     }).catch((error) => {
         if (error["errcode"] === 8) {res.status(401).send(`MPV is not running, make sure to GET /init first`)}
         else if (error["errcode"] === 0) {res.status(404).send(`Path ${path} not found`)}
-        else {console.log(error); res.status(500).send(`error loading ID /${req.params[0]}; see logs for more details`)}
-    })
-
-    // Load subtitles
-    mpv.addSubtitles(sub, "select").then(() => {
-        console.log("Loaded subtitle file successfully")}).catch((error) => {
-        console.log("Error loading subtitle file")
-        console.log(error)
+        else {console.log(`[removetv]: /load/${req.params.id} error log:`); console.log(error); res.status(500).send(`error loading; see logs for more details`)}
     })
 })
 
@@ -208,7 +220,7 @@ app.get('/togglesub', (req, res) => {
             mpv.toggleSubtitleVisibility()
                 .then(() => {
                     res.status(200).send(`Successfully toggled subtitles`)
-                }).catch((error) => {console.log(error); res.status(500).send(`Error toggling subtitles; see logs for more details`)})
+                }).catch((error) => {console.log('[removetv]: /togglesub/ error log:'); console.log(error); res.status(500).send(`Error toggling subtitles; see logs for more details`)})
         }
     })
 })
@@ -218,7 +230,7 @@ app.get('/volume/:volume', (req, res) => {
   mpv.volume(req.params.volume)
       .then(() => {
         res.status(200).send(`Successfully set volume`)
-      }).catch((error) => {console.log(error); res.status(500).send(`Error setting volume; see logs for more details (did you GET /init?)`)})
+      }).catch((error) => {console.log(`[removetv]: /volume/${req.params.volume} error log:`); console.log(error); res.status(500).send(`Error setting volume; see logs for more details (did you GET /init?)`)})
 })
 
 // Play/pause
@@ -229,7 +241,7 @@ app.get('/playpause', (req, res) => {
             mpv.togglePause()
                 .then(() => {
                     res.status(200).send(`Successfully toggled play/pause`)
-                }).catch((error) => {console.log(error); res.status(500).send(`Error toggling play/pause; see logs for more details`)})
+                }).catch((error) => {console.log('[removetv]: /playpause/ error log:'); console.log(error); res.status(500).send(`Error toggling play/pause; see logs for more details`)})
         }
     })
 })
@@ -242,7 +254,7 @@ app.get('/stop', (req, res) => {
             mpv.stop()
                 .then(() => {
                     res.status(200).send(`Successfully stopped`)
-                }).catch((error) => {console.log(error); res.status(500).send(`Error stopping; see logs for more details`)})
+                }).catch((error) => {console.log('[removetv]: /stop/ error log:'); console.log(error); res.status(500).send(`Error stopping; see logs for more details`)})
         }
     })
 })
@@ -255,7 +267,7 @@ app.get('/timestamp/:timestamp', (req, res) => {
             mpv.goToPosition(req.params.timestamp)
                 .then(() => {
                     res.status(200).send(`Successfully set timestamp`)
-                }).catch((error) => {console.log(error); res.status(500).send(`Error setting timestamp, see logs for more details`)})
+                }).catch((error) => {console.log(`[removetv]: /timestamp/${req.params.timestamp} error log:`); console.log(error); res.status(500).send(`Error setting timestamp, see logs for more details`)})
         }
     })
 })
@@ -271,5 +283,5 @@ const httpServer = http.createServer(app)
 const PORT = 8945
 const HOSTNAME = "0.0.0.0"
 httpServer.listen(PORT, HOSTNAME, () => {
-  console.log(`HTTP server running on port ${PORT}`)
+  console.log(`[remotetv]: HTTP server running on port ${PORT}`)
 })
