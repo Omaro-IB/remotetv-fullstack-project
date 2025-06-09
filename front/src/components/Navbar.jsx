@@ -41,7 +41,7 @@ const Navbar = ({dark, page, toggleDark}) => {
                         <p><a href="https://mpv.io/" className={dark? "text-dark-primary underline" : "text-primary underline"}>MPV</a> is used for all the media playback since it has extensive scripting support, and strives for the same minimalism as this app.</p>
                         <h2 className={"text-3xl font-bold mt-4"}>But why?</h2>
                         <p>Instead of dealing with clunky TV interfaces, you can fully control everything from your phone, tablet, or laptop right from your browser - no app install or anything necessary. </p>
-                        <p>Multiple people can control the TV at the same time, and only need to be connected to your home network.</p>
+                        <p>Multiple people can control the TV at the same time, and only need to be connected to your local network.</p>
                         <h2 className={"text-3xl font-bold mt-4"}>For more usage information, inspect the source code, or report bugs:</h2>
                         <a href="https://github.com/Omaro-IB/remotetv-fullstack-project" className={dark? "text-dark-primary underline" : "text-primary underline"}>https://github.com/Omaro-IB/remotetv-fullstack-project</a>
                         <p className={"mt-10 opacity-70"}> Copyright © {new Date().getFullYear()} Free Software Foundation, Inc. https://fsf.org/</p>
