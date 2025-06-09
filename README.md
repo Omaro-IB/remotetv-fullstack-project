@@ -1,11 +1,65 @@
 # remotetv-fullstack-project
 Alternative Smart TV built on MPV, React, and NodeJS
 
+
+## Documentation
+### Install
+TODO...
+
+### Usage
+TODO...
+
+### Library JSON file format
+JSON library files may be specified with the `--library` option to manually specify (as opposed to relying on automatic file scanning) files, their metadata, and type.
+
+A library file must follow a strict format. It consists of a root array of `collection` and `single` objects. A `collection` is a collection of related media files (ex. tv series or album), while a `single` is a single media file (ex. movie or single song). These both use `item` objects to specify file paths, their metadata, and type.
+
+An `item` is specified as:
+```json
+{
+  "path": String: valid path to media file,
+  "img": String: valid path to image file (optional),
+  "sub": String: valid path to subtitle or lyrics file (optional),
+  "text": String: any details or description (optional),
+  "release": Number: release date (optional),
+  "quality": String: quality of the media (optional),
+  "language": String: language of the media (optional)
+}
+```
+
+A `single` is specified as:
+```json
+{
+  "name": String,
+  "item": Item
+}
+```
+
+A `collection` is specified as:
+```json
+{
+  "name": String,
+  "items": [[Item, ...], ...]: nested array of Item objects (each inner array may be a season of a TV series for example),
+  "group_labels": [String]: array of names of each group (ex. Season1, Season2, etc.). This must be equal in length as "items"
+  "item_labels": [[String, ...], ...]: array of names of each item (ex. name of each episode). This must be equal in shape as "items"
+}
+```
+
+The library format is therefore specified as:
+```json
+[Single | Collection, ...]
+```
+
+
+### File organization for automatic scanning
+TODO...
+
+
 ## TODO
 ### Basics
  - [ ] Install, setup, and maintenance documentation
    - [ ] Document backend CLI usage
-   - [ ] Document JSON library structure
+   - [X] Document JSON library structure
    - [ ] Document file structure for automatic scanning
  - [X] Design UI
  - [X] Create UI using React with basic player functionality
