@@ -45,11 +45,11 @@ const HomePage = ({dark, displayMessage}) => {
                     setGroup(status.data["playing"]["group_labels"][status.data["group"]])
                     setItem(status.data["playing"]["item_labels"][status.data["group"]][status.data["item"]])
                     thisItem = status.data["playing"]["items"][status.data["group"]][status.data["item"]]
-                    setImage(thisItem["img"] === undefined ? "" : services.getImgUrl(status.data.id, [status.data["group"]], [status.data["item"]]))
+                    setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id, [status.data["group"]], [status.data["item"]]))
                 } else {  // single
                     // set single-dependent hooks
                     thisItem = status.data["playing"]["item"]
-                    setImage(thisItem["img"] === undefined ? "" : services.getImgUrl(status.data.id))
+                    setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id))
                 }
                 // set general hooks
                 setSub(thisItem["sub"] === undefined ? "" : thisItem["sub"])
@@ -81,7 +81,7 @@ const HomePage = ({dark, displayMessage}) => {
             <div className={!isPlaying ? "hidden" : ""}>
                 <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed} pausePlayClick={pausePlayClick}
                         volume={volume} onSetVolume={onSetVolume} title={title} img={image} forwardClick={forwardClick} backClick={backClick} stopClick={stopClick}
-                        season={group} episode={item} subClick={sub === "" ? null : onToggleSubs} details={details} />
+                        season={group} episode={item} subClick={onToggleSubs} details={details} />
             </div>
             {/*  Info component - displayed if !isPlaying */}
             <div className={isPlaying ? "hidden" : ""}>

@@ -108,6 +108,20 @@ app.get('/rescan/', (req, res) => {
     res.status(200).send(library)
 })
 
+// Get scanner errors and warnings
+app.get('/scanstatus', (req, res) => {
+    try {
+        res.status(200).json({
+            warnings: warnings,
+            errors: errors
+        })
+    } catch (error) {
+        console.log('[removetv]: /scanstatus/ error log:')
+        console.log(error)
+        res.status(500).send("Unexpected error loading directory.json; see logs for more details")
+    }
+})
+
 // Get current playing filename
 app.get('/status', (req, res) => {
     getStatus().then(status => res.status(200).json(status)).catch(error => {
@@ -188,18 +202,20 @@ app.get('/load/:id', (req, res) => {
     }
 
     // Load subtitles
-    const path_directory = pathlib.dirname(path)
-    const path_ext = pathlib.extname(path)
-    const sub_ext = pathlib.extname(sub)
-    const path_no_ext = pathlib.basename(path, path_ext)
-    const sub_new = pathlib.join(path_directory, path_no_ext + sub_ext)
-    if (fs.existsSync(sub_new)) {
-        console.log(`[remotetv]: Using subtitle file ${sub_new}`)
-    } else {
-        fs.copyFile(sub, sub_new, (err) => {
-            if (err) {console.log("[remotetv]: error log moving subtitle file"); console.log(err)}
-            else {console.log(`[remotetv]: ${sub} copied to ${sub_new}`)}
-        });
+    if (sub !== undefined) {
+        const path_directory = pathlib.dirname(path)
+        const path_ext = pathlib.extname(path)
+        const sub_ext = pathlib.extname(sub)
+        const path_no_ext = pathlib.basename(path, path_ext)
+        const sub_new = pathlib.join(path_directory, path_no_ext + sub_ext)
+        if (fs.existsSync(sub_new)) {
+            console.log(`[remotetv]: Using subtitle file ${sub_new}`)
+        } else {
+            fs.copyFile(sub, sub_new, (err) => {
+                if (err) {console.log("[remotetv]: error log moving subtitle file"); console.log(err)}
+                else {console.log(`[remotetv]: ${sub} copied to ${sub_new}`)}
+            });
+        }
     }
 
     // Load path
