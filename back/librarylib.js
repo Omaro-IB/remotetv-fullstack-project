@@ -195,11 +195,15 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                         })
                     } else if (SSDir1) {  // sub-sub directory files as group 0
                         let ctr = 0
+                        const collectionItemsT = []
+                        const collectionItemLabelsT = []
                         SSDirsMediaFiles.forEach(x => {
                             ctr += x.length
-                            collectionItems.push(...pathsToItems(x))
-                            collectionItemLabels.push(...x.map(p => path.basename(p)))
+                            collectionItemsT.push(...pathsToItems(x))
+                            collectionItemLabelsT.push(...x.map(p => path.basename(p)))
                         })
+                        collectionItems.push(collectionItemsT)
+                        collectionItemLabels.push(collectionItemLabelsT)
                         collectionGroupLabels = getGroupLabels(SSDirsMediaFiles[0][0], ctr)
                     } else if (!SSDir || SSDir0) {  // no compatible media files, push error
                         errors.push(`[collection: ${subDir}]: no compatible media found in this directory`)
