@@ -99,7 +99,8 @@ const LibraryPage = ({dark, displayMessage}) => {
             </div>
 
             {/* Collection selector */}
-            <div className={(collection === undefined) ? "hidden" : "absolute top-40 left-0 w-full justify-center flex"}>
+            <div className={(collection === undefined) ? "hidden" : "absolute top-0 left-0 w-fit h-full justify-center flex"}>
+            <div className={"flex sticky top-10 justify-center h-fit"}>
                 <div className={dark ? "bg-dark-surface text-dark-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4 shadow-dark-shadow" : "bg-surface text-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4"}>
                     <FaXmark className={dark ? "fill-dark-primary w-7 h-7 cursor-pointer mb-5" : "fill-primary w-7 h-7 cursor-pointer mb-5"} onClick={() => setCollection(undefined)}/>
                     {/*<p>{JSON.stringify(episodes)}</p>*/}
@@ -122,6 +123,7 @@ const LibraryPage = ({dark, displayMessage}) => {
                         ))}
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     )
