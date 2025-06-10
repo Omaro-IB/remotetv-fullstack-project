@@ -12,7 +12,7 @@ const Container = ({children, dark, below}) => (
     </div>
 )
 
-export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, season, episode, stopClick, backClick, forwardClick, subClick, details}) {
+export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, season, episode, stopClick, backClick, forwardClick, subClick, details, hasSub}) {
     function formatDuration(value) {
         const minute = Math.floor(value / 60);
         const secondLeft = Math.ceil(value - minute * 60);
@@ -117,7 +117,7 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                         },
                     }))}
                 />
-                <div className={dark ? "z-10 w-12 h-12 m-1 bg-dark-primary-container p-1 rounded cursor-pointer" : "z-10 w-12 h-12 m-1 bg-primary-container p-1 rounded cursor-pointer"} onClick={subClick}>
+                <div className={!hasSub ? "hidden" : (dark ? "z-10 w-12 h-12 m-1 bg-dark-primary-container p-1 rounded cursor-pointer" : "z-10 w-12 h-12 m-1 bg-primary-container p-1 rounded cursor-pointer")} onClick={subClick}>
                     <p className={"text-sm"}>Toggle Subs</p>
                 </div>
             </div>

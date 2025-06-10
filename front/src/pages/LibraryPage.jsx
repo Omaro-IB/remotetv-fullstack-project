@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import { FaXmark } from "react-icons/fa6";
 import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
-import { MdExpandMore } from "react-icons/md";
+import { MdExpandMore, MdOutlineSubtitles } from "react-icons/md";
 
 const LibraryPage = ({dark, displayMessage}) => {
     const navigate = useNavigate()
@@ -32,19 +32,21 @@ const LibraryPage = ({dark, displayMessage}) => {
                     if (media.name === undefined) {return <div></div>}
 
                     // Metadata depending on collection (use first group/item) or single
-                    let image; let release; let quality; let language; let details
+                    let image; let release; let quality; let language; let details; let hasSub
                     if ('items' in media) {  // collection
                         image = (media.items[0][0].img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(mediaIndex, 0, 0)})`
                         release = media.items[0][0].release
                         quality = media.items[0][0].quality
                         language = media.items[0][0].language
                         details = media.items[0][0].text
+                        hasSub = media.items[0][0].sub !== undefined
                     } else { // single
                         image = (media.item.img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(mediaIndex)})`
                         release = media.item.release
                         quality = media.item.quality
                         language = media.item.language
                         details = media.item.text
+                        hasSub = media.item.sub !== undefined
                     }
 
                     return(<div key={media.id} style={{backgroundImage: image}} className={dark ? "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-2xl shadow-dark-shadow rounded" : "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-xl rounded"}>
@@ -68,6 +70,10 @@ const LibraryPage = ({dark, displayMessage}) => {
                                     <div className={(language === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
                                         <IoLanguageSharp/>
                                         <p>{language}</p>
+                                    </div>
+                                    <div className={(!hasSub) ? "hidden" : "flex flex-1 items-center space-x-1"}>
+                                        <MdOutlineSubtitles className={(hasSub ? "" : "hidden")} />
+                                        <p>subs</p>
                                     </div>
                                 </div>
                             </div>

@@ -14,7 +14,7 @@ const HomePage = ({dark, displayMessage}) => {
     const [group, setGroup] = useState(undefined);
     const [item, setItem] = useState(undefined);
     const [image, setImage] = useState("");
-    const [sub, setSub] = useState("");
+    const [hasSub, sethasSub] = useState(false);
     const [details, setDetails] = useState("");
 
     // Media Control API Calls
@@ -52,7 +52,7 @@ const HomePage = ({dark, displayMessage}) => {
                     setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id))
                 }
                 // set general hooks
-                setSub(thisItem["sub"] === undefined ? "" : thisItem["sub"])
+                sethasSub(thisItem["sub"] !== undefined)
                 setDetails(thisItem["text"] === undefined ? "" : thisItem["text"])
 
             } else {
@@ -81,7 +81,7 @@ const HomePage = ({dark, displayMessage}) => {
             <div className={!isPlaying ? "hidden" : ""}>
                 <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed} pausePlayClick={pausePlayClick}
                         volume={volume} onSetVolume={onSetVolume} title={title} img={image} forwardClick={forwardClick} backClick={backClick} stopClick={stopClick}
-                        season={group} episode={item} subClick={onToggleSubs} details={details} />
+                        season={group} episode={item} subClick={onToggleSubs} details={details} hasSub={hasSub}/>
             </div>
             {/*  Info component - displayed if !isPlaying */}
             <div className={isPlaying ? "hidden" : ""}>
