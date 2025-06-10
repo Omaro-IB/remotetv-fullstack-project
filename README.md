@@ -56,11 +56,13 @@ TODO...
 
 
 ## TODO
-### Basics
+### General
  - [ ] Install, setup, and maintenance documentation
    - [ ] Document backend CLI usage
    - [X] Document JSON library structure
    - [ ] Document file structure for automatic scanning
+ - [ ] Ability to queue entire collection groups to playlist
+ - [ ] Ability to upload media files directly to server (+ option to fill out info manually and upload subs)
  - [X] Design UI
  - [X] Create UI using React with basic player functionality
  - [X] Finish API for interacting with MPV player completely
@@ -81,7 +83,7 @@ TODO...
 
 ### Backend
  - [X] Refactor codebase to support rescanning (using library in-memory instead of reading JSON file each time)
- - [ ] Library scanner
+ - [X] Library scanner
  - [X] Endpoint to rescan library - should update library in memory as well as errors/warnings
  - [X] Endpoint to toggle subtitles
  - [ ] Use Server-Sent Events (SSE) (see [events.odt]) to update users' media player if any changes are made from another device
@@ -90,6 +92,7 @@ TODO...
 ### Setup
  - [X] Easy way to specify single and series folder for scanner to search
  - [ ] Create an "installer" for Windows (.bat script), Linux (.sh), and Mac (also .sh) with clear and short steps 
+ - [ ] Create a launch script for easy use that also synchronizes port numbers to avoid hard-coding
 
 ### Extra Stuff
  - [ ] Under Info - more button that redirects to /info page with troubleshooting and FAQ
