@@ -15,6 +15,7 @@ const Navbar = ({dark, page, toggleDark}) => {
     const [displayInfo, setDisplayInfo] = useState(false);
 
     return (<div className={dark ? "bg-dark-primary-container flex flex-row justify-between sm:justify-start sm:space-x-10 py-5 px-10" : "bg-primary-container flex flex-row justify-between sm:justify-start sm:space-x-10 py-5 px-10 ring-slate-900/5 shadow-md"}>
+        {/* Info and dark buttons */}
         <button onClick={() => setDisplayInfo(true)}>
             <FaInfoCircle className={dark ? "w-5 h-5 fill-dark-surface-on" : "w-5 h-5 fill-surface-on"}/>
         </button>
@@ -22,10 +23,14 @@ const Navbar = ({dark, page, toggleDark}) => {
             <FaSun className={!dark ? "hidden" : "w-5 h-5 fill-dark-surface-on"}></FaSun>
             <FaMoon className={dark ? "hidden" : "w-5 h-5 fill-surface-on"}></FaMoon>
         </button>
+
+        {/* Page Links */}
         <HashLink to="/"><NavbarLink dark={dark} strikethrough={page === "Home"}
                                      text={"TV Remote"}></NavbarLink></HashLink>
         <HashLink to="/library"><NavbarLink dark={dark} strikethrough={page === "Library"}
                                             text={"Library"}></NavbarLink></HashLink>
+        <HashLink to="/scan"><NavbarLink dark={dark} strikethrough={page === "Scan"}
+                                            text={"Scanner"}></NavbarLink></HashLink>
 
         {/* Information screen */}
         <div className={displayInfo ? "absolute top-0 right-0 w-screen h-screen z-50" : "hidden"}>

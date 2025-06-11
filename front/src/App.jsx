@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import HomePage from "./pages/HomePage.jsx";
 import Navbar from "./components/Navbar.jsx";
 import LibraryPage from "./pages/LibraryPage.jsx";
+import ScanPage from "./pages/ScanPage.jsx";
 import ErrorBar from "./components/ErrorBar.jsx";
 import {
     BrowserRouter as Router,
@@ -40,11 +41,21 @@ const App = () => {
             <LibraryPage dark={dark} displayMessage={displayMessage}/>
         </div>)
 
+    // Scanner Page + Navbar
+    const ScannerPageN = () => (
+        <div className={rootClassName}>
+            <Navbar dark={dark} page={"Scan"} toggleDark={toggleDark}/>
+            <div className={(errorMessage === "") ? "hidden" : ""}><ErrorBar dark={dark} message={errorMessage}/></div>
+            <ScanPage dark={dark} displayMessage={displayMessage}/>
+        </div>
+    )
+
     return (
         <Router> <Routes> {/* The Switch decides which component to show based on the current URL.*/}
             <Route exact path="/" Component={HomePageN}/>
             <Route exact path="/home" Component={HomePageN}/>
             <Route exact path="/library" Component={LibraryPageN}/>
+            <Route exact path="/scan" Component={ScannerPageN}/>
             <Route exact path="*" Component={HomePageN}/>
         </Routes> </Router>
     );

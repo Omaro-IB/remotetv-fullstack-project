@@ -74,4 +74,14 @@ const getImgUrl = (i0, i1, i2) => {
     }
 }
 
-export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub}
+// GET /scanstatus
+const scannerStatus = () => {
+    return axios.get(`${baseUrl}/scanstatus`)
+}
+
+// GET /rescan
+const rescanScanner = () => {
+    return axios.get(`${baseUrl}/rescan`)
+}
+
+export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, scannerStatus, rescanScanner}
