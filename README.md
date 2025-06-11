@@ -70,10 +70,8 @@ TODO...
 
 ### Frontend
  - [ ] Sort by and filters for library
- - [ ] Scanner page
-   - [ ] Errors: file paths that cannot be parsed (ex. ambiguous season number)
-   - [ ] Warnings: missing non-critical information (ex. unknown metadata) 
-   - [ ] Rescan library button
+ - [X] Scanner page (errors and warnings & rescan button)
+   - [ ] Make look nicer
    - [ ] Option to auto rescan every $n$ minutes
  - [X] Subtitle button for media player
  - [X] Episode selector for TV shows
