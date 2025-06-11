@@ -1,5 +1,5 @@
 'use strict';
-import {library_schema} from './schemas.js';
+import {library_schema, collections_schema, singles_schema} from './schemas.js';
 import fs from "fs";
 import path from 'path';
 
@@ -217,7 +217,10 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                         group_labels: collectionGroupLabels,
                         item_labels: collectionItemLabels
                     }
-                    library.push(this_collection)
+
+                    const {error: col_error} = collections_schema.validate(this_collection)
+                    if (col_error) {errors.push(`$[collection ${subDir}]: error creating collection object from this directory`)}
+                    else {library.push(this_collection)}
                 }
             }
         })
@@ -235,8 +238,10 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                 name: path.basename(media_path),
                 item: this_item
             }
-            library.push(this_single)
-            warnings.push(...this_warnings)
+
+            const {error: sin_error} = singles_schema.validate(this_single)
+            if (sin_error) {errors.push(`$[single ${dir}]: error creating single object from this media file`)}
+            else {library.push(this_single); warnings.push(...this_warnings)}
         })
     })
 
