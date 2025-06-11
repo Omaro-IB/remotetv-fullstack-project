@@ -49,37 +49,34 @@ const LibraryPage = ({dark, displayMessage}) => {
                         hasSub = media.item.sub !== undefined
                     }
 
-                    return(<div key={media.id} style={{backgroundImage: image}} className={dark ? "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-2xl shadow-dark-shadow rounded" : "m-3 bg-cover bg-center bg-no-repeat sm:w-[23%] sm:h-[350px] shadow-xl rounded"}>
+                    return(<div key={media.id} style={{backgroundImage: image}} className={dark ? "m-3 bg-cover bg-center bg-no-repeat w-full min-h-48 sm:w-[23%] sm:h-[350px] shadow-2xl shadow-dark-shadow rounded" : "m-3 bg-cover bg-center bg-no-repeat w-full min-h-48 sm:w-[23%] sm:h-[350px] shadow-xl rounded"}>
 
                         {/* Media display */}
-                        <div className={"flex flex-col mx-5 mt-5"}>
-                            <div className={dark? "flex flex-row justify-evenly bg-dark-surface-trans" : "flex flex-row justify-evenly bg-surface-trans"}>
-                                {/* Media name */}
-                                <strong className={dark ? "text-3xl text-left h-fit text-dark-surface-on overflow-auto" : "text-3xl text-left h-fit text-surface-on overflow-auto"}>{media.name}</strong>
-
-                                {/* Release, quality, and language */}
-                                <div className={dark ? "text-lg text-left h-fit text-dark-surface-on" : "text-lg text-left h-fit text-surface-on"}>
-                                    <div className={(release === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                        <FaCalendarAlt/>
-                                        <p>{release}</p>
-                                    </div>
-                                    <div className={(quality === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                        <LuSettings2/>
-                                        <p>{quality}</p>
-                                    </div>
-                                    <div className={(language === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                        <IoLanguageSharp/>
-                                        <p>{language}</p>
-                                    </div>
-                                    <div className={(!hasSub) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                        <MdOutlineSubtitles className={(hasSub ? "" : "hidden")} />
-                                        <p>subs</p>
-                                    </div>
+                        <div className={dark ? "flex flex-row justify-evenly m-5 bg-dark-surface-trans" : "flex flex-row justify-evenly m-5 bg-surface-trans"}>
+                            {/* Media name and details */}
+                            <div className={"overflow-auto flex flex-col"}>
+                                <strong className={dark ? "text-3xl text-left h-fit text-dark-surface-on" : "text-3xl text-left h-fit text-surface-on"}>{media.name}</strong>
+                                <strong className={dark ? "text-dark-surface-on h-fit text-left p-2" : "text-surface-on h-fit text-left p-2"}>{details}</strong>
+                            </div>
+                            {/* Release, quality, and language */}
+                            <div className={dark ? "text-lg text-left h-fit text-dark-surface-on" : "text-lg text-left h-fit text-surface-on"}>
+                                <div className={(release === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
+                                    <FaCalendarAlt/>
+                                    <p>{release}</p>
+                                </div>
+                                <div className={(quality === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
+                                    <LuSettings2/>
+                                    <p>{quality}</p>
+                                </div>
+                                <div className={(language === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
+                                    <IoLanguageSharp/>
+                                    <p>{language}</p>
+                                </div>
+                                <div className={(!hasSub) ? "hidden" : "flex flex-1 items-center space-x-1"}>
+                                    <MdOutlineSubtitles className={(hasSub ? "" : "hidden")} />
+                                    <p>subs</p>
                                 </div>
                             </div>
-
-                            {/* Details (text) */}
-                            <strong className={dark ? "bg-dark-surface-trans text-dark-surface-on h-24 overflow-auto text-left p-2" : "bg-surface-trans text-surface-on h-24 overflow-auto text-left p-2"}>{details}</strong>
                         </div>
 
                         {/* Button for single (play) or collection (select to play) */}
@@ -99,22 +96,29 @@ const LibraryPage = ({dark, displayMessage}) => {
             </div>
 
             {/* Collection selector */}
-            <div className={(collection === undefined) ? "hidden" : "absolute top-0 left-0 w-fit h-full justify-center flex"}>
-            <div className={"flex sticky top-10 justify-center h-fit"}>
-                <div className={dark ? "bg-dark-surface text-dark-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4 shadow-dark-shadow" : "bg-surface text-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4"}>
-                    <FaXmark className={dark ? "fill-dark-primary w-7 h-7 cursor-pointer mb-5" : "fill-primary w-7 h-7 cursor-pointer mb-5"} onClick={() => setCollection(undefined)}/>
-                    {/*<p>{JSON.stringify(episodes)}</p>*/}
+            <div className={(collection === undefined ? "hidden" : "absolute top-0 left-0 w-full h-full")}>
+                <div className={dark ? "sticky top-10 mx-auto bg-dark-surface p-5 rounded-lg shadow-2xl shadow-dark-shadow w-5/6 sm:w-1/3 min-h-20 max-h-[90vh] h-fit overflow-auto" : "sticky top-10 mx-auto bg-surface p-5 rounded-lg shadow-2xl w-5/6 sm:w-1/3 min-h-20 max-h-[90vh] h-fit overflow-auto"}>
+                    {/* Close selector */}
+                    <FaXmark
+                        className={dark ? "fill-dark-primary w-7 h-7 cursor-pointer mb-5" : "fill-primary w-7 h-7 cursor-pointer mb-5"}
+                        onClick={() => setCollection(undefined)}/>
+                    {/* Selector */}
                     <div className={"flex flex-col overflow-scroll"}>
                         {(collection === undefined) ? "" : collection.items.map((group, group_index) => (
                             // Group accordion
                             <Accordion key={group_index}>
-                                <AccordionSummary expandIcon={<MdExpandMore className={dark? "fill-dark-surface-on" : "fill-surface-on"} />} aria-controls="panel1-content" id="panel1-header" style={dark ? {backgroundColor: "#141218"} : {backgroundColor: "#FEF7FF"}}>
-                                    <p className={dark? "text-dark-surface-on" : "text-surface-on"}>{`${collection.group_labels[group_index]}`}</p>
+                                <AccordionSummary expandIcon={<MdExpandMore
+                                    className={dark ? "fill-dark-surface-on" : "fill-surface-on"}/>}
+                                                  aria-controls="panel1-content" id="panel1-header"
+                                                  style={dark ? {backgroundColor: "#141218"} : {backgroundColor: "#FEF7FF"}}>
+                                    <p className={dark ? "text-dark-surface-on" : "text-surface-on"}>{`${collection.group_labels[group_index]}`}</p>
                                 </AccordionSummary>
-                                <AccordionDetails className={dark? "bg-dark-surface text-dark-surface-on" : "bg-surface text-surface-on"}>
+                                <AccordionDetails
+                                    className={dark ? "bg-dark-surface text-dark-surface-on" : "bg-surface text-surface-on"}>
                                     {group.map(((item, item_index) => (
                                         // Item button
-                                        <button key={item_index} onClick={() => services.playByID(`${ID},${group_index},${item_index}`).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))} className={dark ? "bg-dark-primary-container w-fit p-1 mx-1 text-dark-primary-container-on rounded drop-shadow-md shadow-dark-shadow" : "bg-primary-container w-fit p-1 mx-1 text-primary-container-on rounded drop-shadow-md"}>
+                                        <button key={item_index}
+                                                onClick={() => services.playByID(`${ID},${group_index},${item_index}`).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))} className={dark ? "bg-dark-primary-container w-fit p-1 mx-1 text-dark-primary-container-on rounded drop-shadow-md shadow-dark-shadow" : "bg-primary-container w-fit p-1 mx-1 text-primary-container-on rounded drop-shadow-md"}>
                                             {`${collection.item_labels[group_index][item_index]}`}
                                         </button>
                                     )))}
@@ -124,7 +128,43 @@ const LibraryPage = ({dark, displayMessage}) => {
                     </div>
                 </div>
             </div>
-            </div>
+
+
+            {/*<div*/}
+            {/*    className={(collection === undefined) ? "hidden" : "absolute top-0 left-0 w-fit h-full justify-center flex"}>*/}
+            {/*    <div className={"flex sticky top-10 justify-center h-fit"}>*/}
+            {/*        <div*/}
+            {/*            className={dark ? "bg-dark-surface text-dark-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4 shadow-dark-shadow" : "bg-surface text-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4"}>*/}
+            {/*            <FaXmark*/}
+            {/*                className={dark ? "fill-dark-primary w-7 h-7 cursor-pointer mb-5" : "fill-primary w-7 h-7 cursor-pointer mb-5"}*/}
+            {/*                onClick={() => setCollection(undefined)}/>*/}
+            {/*            /!*<p>{JSON.stringify(episodes)}</p>*!/*/}
+            {/*            <div className={"flex flex-col overflow-scroll"}>*/}
+            {/*                {(collection === undefined) ? "" : collection.items.map((group, group_index) => (*/}
+            {/*                    // Group accordion*/}
+            {/*                    <Accordion key={group_index}>*/}
+            {/*                        <AccordionSummary expandIcon={<MdExpandMore*/}
+            {/*                            className={dark ? "fill-dark-surface-on" : "fill-surface-on"}/>}*/}
+            {/*                                          aria-controls="panel1-content" id="panel1-header"*/}
+            {/*                                          style={dark ? {backgroundColor: "#141218"} : {backgroundColor: "#FEF7FF"}}>*/}
+            {/*                            <p className={dark ? "text-dark-surface-on" : "text-surface-on"}>{`${collection.group_labels[group_index]}`}</p>*/}
+            {/*                        </AccordionSummary>*/}
+            {/*                        <AccordionDetails*/}
+            {/*                            className={dark ? "bg-dark-surface text-dark-surface-on" : "bg-surface text-surface-on"}>*/}
+            {/*                            {group.map(((item, item_index) => (*/}
+            {/*                                // Item button*/}
+            {/*                                <button key={item_index}*/}
+            {/*                                        onClick={() => services.playByID(`${ID},${group_index},${item_index}`).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))} className={dark ? "bg-dark-primary-container w-fit p-1 mx-1 text-dark-primary-container-on rounded drop-shadow-md shadow-dark-shadow" : "bg-primary-container w-fit p-1 mx-1 text-primary-container-on rounded drop-shadow-md"}>*/}
+            {/*                                {`${collection.item_labels[group_index][item_index]}`}*/}
+            {/*                            </button>*/}
+            {/*                        )))}*/}
+            {/*                    </AccordionDetails>*/}
+            {/*                </Accordion>*/}
+            {/*            ))}*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+            {/*</div>*/}
         </div>
     )
 }
