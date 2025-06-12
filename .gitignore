@@ -20,5 +20,4 @@ dist-ssr
 # Packages and configs and stuff
 package-lock.json
 .eslintrc.cjs
-vite.config.js
 .env
