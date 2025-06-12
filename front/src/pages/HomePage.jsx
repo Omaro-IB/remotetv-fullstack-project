@@ -52,7 +52,7 @@ const HomePage = ({dark, displayMessage}) => {
                     setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id))
                 }
                 // set general hooks
-                sethasSub(thisItem["sub"] !== undefined)
+                sethasSub(thisItem["sub"] !== undefined || status.data["subsavailable"] === true)
                 setDetails(thisItem["text"] === undefined ? "" : thisItem["text"])
 
             } else {

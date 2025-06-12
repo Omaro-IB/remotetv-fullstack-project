@@ -26,7 +26,7 @@ app.disable('etag')
 
 
 const getStatus = () => {
-    let status = {"playing": undefined, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined}
+    let status = {"playing": undefined, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined, "subsavailable": undefined}
     let no_catches = true
 
     // Set "playing" = info of playing media
@@ -69,8 +69,13 @@ const getStatus = () => {
         status["volume"] = volume
     }).catch((_) => {no_catches = false})
 
+    // set "subsavailable" = sub-end !== null
+    const promise6 = mpv.getProperty("track-list").then(list => {
+        status["subsavailable"] = Array.isArray(list) ? list.some(l => l["type"] === "sub") : false
+    }).catch((_) => {no_catches = false})
+
     return new Promise((resolve) => {
-        Promise.all([promise1, promise2, promise3, promise4, promise5]).then(() => {
+        Promise.all([promise1, promise2, promise3, promise4, promise5, promise6]).then(() => {
             if (no_catches) {resolve(status)}
             else {resolve({"playing": false})}
         })
@@ -233,7 +238,7 @@ app.get('/togglesub', (req, res) => {
     getStatus().then((status) => {
         if (!status.playing) {res.status(402).send("No file is playing")}
         else {
-            mpv.toggleSubtitleVisibility()
+            mpv.cycleSubtitles()
                 .then(() => {
                     res.status(200).send(`Successfully toggled subtitles`)
                 }).catch((error) => {console.log('[removetv]: /togglesub/ error log:'); console.log(error); res.status(500).send(`Error toggling subtitles; see logs for more details`)})

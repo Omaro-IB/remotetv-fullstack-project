@@ -1,5 +1,6 @@
 import Slider from '@mui/material/Slider';
 import {FaPause, FaPlay, FaForward, FaBackward, FaVolumeDown, FaAngleRight} from "react-icons/fa";
+import { MdOutlineSubtitles } from "react-icons/md";
 import { FaXmark } from "react-icons/fa6";
 
 const Container = ({children, dark, below}) => (
@@ -117,8 +118,8 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                         },
                     }))}
                 />
-                <div className={!hasSub ? "hidden" : (dark ? "z-10 w-12 h-12 m-1 bg-dark-primary-container p-1 rounded cursor-pointer" : "z-10 w-12 h-12 m-1 bg-primary-container p-1 rounded cursor-pointer")} onClick={subClick}>
-                    <p className={"text-sm"}>Toggle Subs</p>
+                <div className={!hasSub ? "hidden" : (dark ? "z-10 w-12 h-fit ml-3 bg-dark-primary-on p-1 rounded cursor-pointer drop-shadow-md shadow-dark-shadow" : "z-10 w-fit h-fit ml-3 bg-primary-on p-1 rounded cursor-pointer drop-shadow-md")} onClick={subClick}>
+                    <MdOutlineSubtitles className={"w-8 h-8"} />
                 </div>
             </div>
         </Container>

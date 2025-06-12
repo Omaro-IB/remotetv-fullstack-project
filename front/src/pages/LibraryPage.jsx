@@ -24,7 +24,7 @@ const LibraryPage = ({dark, displayMessage}) => {
 
     return (
         <div>
-            <div className="flex flex-wrap mt-3 p-4">  {/* Project boxes div */}
+            <div className="flex flex-wrap mt-10 justify-center">  {/* Project boxes div */}
                 {(lib.length === 0) ? (<div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
                     Nothing here yet.
                 </div>) : lib.map((media, mediaIndex) => {
@@ -34,14 +34,14 @@ const LibraryPage = ({dark, displayMessage}) => {
                     // Metadata depending on collection (use first group/item) or single
                     let image; let release; let quality; let language; let details; let hasSub
                     if ('items' in media) {  // collection
-                        image = (media.items[0][0].img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(mediaIndex, 0, 0)})`
+                        image = (media.items[0][0].img === undefined) ? undefined : `url(${services.getImgUrl(mediaIndex, 0, 0)})`
                         release = media.items[0][0].release
                         quality = media.items[0][0].quality
                         language = media.items[0][0].language
                         details = media.items[0][0].text
                         hasSub = media.items[0][0].sub !== undefined
                     } else { // single
-                        image = (media.item.img === undefined) ? (dark ? 'url(/unknown_img_dark.png)' : 'url(/unknown_img.png)') : `url(${services.getImgUrl(mediaIndex)})`
+                        image = (media.item.img === undefined) ? undefined : `url(${services.getImgUrl(mediaIndex)})`
                         release = media.item.release
                         quality = media.item.quality
                         language = media.item.language
@@ -49,7 +49,9 @@ const LibraryPage = ({dark, displayMessage}) => {
                         hasSub = media.item.sub !== undefined
                     }
 
-                    return(<div key={media.id} style={{backgroundImage: image}} className={dark ? "m-3 bg-cover bg-center bg-no-repeat w-full min-h-48 sm:w-[23%] sm:h-[350px] shadow-2xl shadow-dark-shadow rounded" : "m-3 bg-cover bg-center bg-no-repeat w-full min-h-48 sm:w-[23%] sm:h-[350px] shadow-xl rounded"}>
+                    const box_style = `my-3 sm:mx-4 bg-cover bg-center bg-no-repeat w-[90%] sm:w-1/5 ${image === undefined ? 'h-fit' : 'min-h-48'} shadow-2xl ${dark ? "shadow-dark-shadow" : ""} rounded`
+
+                    return(<div key={media.id} style={{backgroundImage: image}} className={box_style}>
 
                         {/* Media display */}
                         <div className={dark ? "flex flex-row justify-evenly m-5 bg-dark-surface-trans" : "flex flex-row justify-evenly m-5 bg-surface-trans"}>
