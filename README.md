@@ -71,7 +71,7 @@ TODO...
 ### Frontend
  - [ ] Sort by and filters for library
  - [X] Scanner page (errors and warnings & rescan button)
-   - [ ] Make look nicer
+   - [X] Make look nicer
    - [ ] Option to auto rescan every $n$ minutes
  - [X] Subtitle button for media player
  - [X] Episode selector for TV shows
