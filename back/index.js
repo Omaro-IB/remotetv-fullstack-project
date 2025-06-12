@@ -65,7 +65,7 @@ const getStatus = () => {
     }).catch((_) => {no_catches = false})
 
     // Set "volume" = integer volume
-    const promise5 = mpv.getProperty("ao-volume").then(volume => {
+    const promise5 = mpv.getProperty("volume").then(volume => {
         status["volume"] = volume
     }).catch((_) => {no_catches = false})
 

@@ -79,7 +79,7 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                 <FaVolumeDown className={"m-2"}/>
                 <Slider
                     aria-label="Volume"
-                    defaultValue={volume}
+                    value={volume}
                     onChange={(_, value) => onSetVolume(value)}
                     min={0}
                     step={5}
