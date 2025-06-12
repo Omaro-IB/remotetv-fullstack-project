@@ -196,17 +196,15 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                             collectionItemLabels.push(x.map(p => path.basename(p)))
                         })
                     } else if (SSDir1) {  // sub-sub directory files as group 0
-                        let ctr = 0
                         const collectionItemsT = []
                         const collectionItemLabelsT = []
                         SSDirsMediaFiles.forEach(x => {
-                            ctr += x.length
                             collectionItemsT.push(...pathsToItems(x))
                             collectionItemLabelsT.push(...x.map(p => path.basename(p)))
                         })
                         collectionItems.push(collectionItemsT)
                         collectionItemLabels.push(collectionItemLabelsT)
-                        collectionGroupLabels = getGroupLabels(SSDirsMediaFiles[0][0], ctr)
+                        collectionGroupLabels = getGroupLabels(SSDirsMediaFiles[0][0], collectionItemLabels.length)
                     } else if (!SSDir || SSDir0) {  // no compatible media files, push error
                         errors.push(`[collection: ${subDir}]: no compatible media found in this directory`)
                     }
@@ -221,7 +219,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                     }
 
                     const {error: col_error} = collections_schema.validate(this_collection)
-                    if (col_error) {errors.push(`$[collection ${subDir}]: error creating collection object from this directory`)}
+                    if (col_error) {console.log(this_collection); console.log(this_collection.items); errors.push(`$[collection ${subDir}]: error creating collection object from this directory`)}
                     else {library.push(this_collection)}
                 }
             }
