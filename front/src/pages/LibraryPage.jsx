@@ -49,19 +49,20 @@ const LibraryPage = ({dark, displayMessage}) => {
                         hasSub = media.item.sub !== undefined
                     }
 
-                    const box_style = `my-3 sm:mx-4 bg-cover bg-center bg-no-repeat w-[90%] sm:w-1/5 ${image === undefined ? 'h-fit' : 'min-h-48'} shadow-2xl ${dark ? "shadow-dark-shadow" : ""} rounded`
+                    const box_style = `flex flex-col my-3 sm:mx-4 bg-cover bg-center bg-no-repeat w-[90%] sm:w-1/5 shadow-2xl ${dark ? "shadow-dark-shadow" : ""} rounded`
 
                     return(<div key={media.id} style={{backgroundImage: image}} className={box_style}>
 
-                        {/* Media display */}
-                        <div className={dark ? "flex flex-row justify-evenly m-5 bg-dark-surface-trans" : "flex flex-row justify-evenly m-5 bg-surface-trans"}>
+                        <div className={dark ? "flex flex-row justify-evenly m-5 bg-dark-surface-trans h-full max-h-72" : "flex flex-row justify-evenly m-5 bg-surface-trans h-full max-h-72"}>
+
                             {/* Media name and details */}
-                            <div className={"overflow-auto flex flex-col"}>
+                            <div className={"overflow-auto flex flex-col w-full h-full"}>
                                 <strong className={dark ? "text-3xl text-left h-fit text-dark-surface-on" : "text-3xl text-left h-fit text-surface-on"}>{media.name}</strong>
                                 <strong className={dark ? "text-dark-surface-on h-fit text-left p-2" : "text-surface-on h-fit text-left p-2"}>{details}</strong>
                             </div>
+
                             {/* Release, quality, and language */}
-                            <div className={dark ? "text-lg text-left h-fit text-dark-surface-on" : "text-lg text-left h-fit text-surface-on"}>
+                            <div className={dark ? "text-lg text-left overflow-auto text-dark-surface-on h-full w-fit" : "text-lg text-left overflow-auto text-surface-on h-full w-fit"}>
                                 <div className={(release === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
                                     <FaCalendarAlt/>
                                     <p>{release}</p>
@@ -82,7 +83,7 @@ const LibraryPage = ({dark, displayMessage}) => {
                         </div>
 
                         {/* Button for single (play) or collection (select to play) */}
-                        <div className={"flex flex-1 w-full justify-end pr-5"}>
+                        <div className={"h-fit w-full mt-auto mb-2 pr-5"}>
                             <button onClick={
                                     ('items' in media) ?
                                     (() => {setCollection(media); setID(mediaIndex)}) :
@@ -130,43 +131,6 @@ const LibraryPage = ({dark, displayMessage}) => {
                     </div>
                 </div>
             </div>
-
-
-            {/*<div*/}
-            {/*    className={(collection === undefined) ? "hidden" : "absolute top-0 left-0 w-fit h-full justify-center flex"}>*/}
-            {/*    <div className={"flex sticky top-10 justify-center h-fit"}>*/}
-            {/*        <div*/}
-            {/*            className={dark ? "bg-dark-surface text-dark-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4 shadow-dark-shadow" : "bg-surface text-surface-on p-5 rounded-lg shadow-2xl w-7/12 sm:w-1/4"}>*/}
-            {/*            <FaXmark*/}
-            {/*                className={dark ? "fill-dark-primary w-7 h-7 cursor-pointer mb-5" : "fill-primary w-7 h-7 cursor-pointer mb-5"}*/}
-            {/*                onClick={() => setCollection(undefined)}/>*/}
-            {/*            /!*<p>{JSON.stringify(episodes)}</p>*!/*/}
-            {/*            <div className={"flex flex-col overflow-scroll"}>*/}
-            {/*                {(collection === undefined) ? "" : collection.items.map((group, group_index) => (*/}
-            {/*                    // Group accordion*/}
-            {/*                    <Accordion key={group_index}>*/}
-            {/*                        <AccordionSummary expandIcon={<MdExpandMore*/}
-            {/*                            className={dark ? "fill-dark-surface-on" : "fill-surface-on"}/>}*/}
-            {/*                                          aria-controls="panel1-content" id="panel1-header"*/}
-            {/*                                          style={dark ? {backgroundColor: "#141218"} : {backgroundColor: "#FEF7FF"}}>*/}
-            {/*                            <p className={dark ? "text-dark-surface-on" : "text-surface-on"}>{`${collection.group_labels[group_index]}`}</p>*/}
-            {/*                        </AccordionSummary>*/}
-            {/*                        <AccordionDetails*/}
-            {/*                            className={dark ? "bg-dark-surface text-dark-surface-on" : "bg-surface text-surface-on"}>*/}
-            {/*                            {group.map(((item, item_index) => (*/}
-            {/*                                // Item button*/}
-            {/*                                <button key={item_index}*/}
-            {/*                                        onClick={() => services.playByID(`${ID},${group_index},${item_index}`).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))} className={dark ? "bg-dark-primary-container w-fit p-1 mx-1 text-dark-primary-container-on rounded drop-shadow-md shadow-dark-shadow" : "bg-primary-container w-fit p-1 mx-1 text-primary-container-on rounded drop-shadow-md"}>*/}
-            {/*                                {`${collection.item_labels[group_index][item_index]}`}*/}
-            {/*                            </button>*/}
-            {/*                        )))}*/}
-            {/*                    </AccordionDetails>*/}
-            {/*                </Accordion>*/}
-            {/*            ))}*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-            {/*</div>*/}
         </div>
     )
 }
