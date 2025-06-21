@@ -52,7 +52,81 @@ The library format is therefore specified as:
 
 
 ### File organization for automatic scanning
-TODO...
+Organization scheme support is quite flexible, with one of the (few) restrictions being that `single`s and `collection`s must be in separate folders (e.g. you must separate your movies and TV series). 
+
+The following organizational structure is recommended, but other structures will likely work: 
+
+#### Items
+Each `item` (each episode, movie, song, etc. file) should ideally (but not required) be stored in its own folder, so that any associated subtitles, images, and [mediainfos](#media-info-files) may be stored with it.
+
+#### Media info files
+Each item (media file) can have `.mediainfo` files alongside any subtitles or images. These files specify text-based metadata to be displayed.
+
+Additionally, `global.mediainfo` files can be stored in the root folder of any collection to be applied to the entire TV series, album, etc.
+
+It is worth noting here that global images are also possible, stored in the same location as `global.png` (or any other supported image format).
+
+Here is the structure of a media info file:
+```json
+{
+   "text": String: any details or description (optional),
+   "release": Number: release date (optional),
+   "quality": String: quality of the media (optional),
+   "language": String: language of the media (optional)
+}
+```
+
+#### Single
+Each single item should be stored in its own sub-directory alongside any other relevant files.
+```
+My Movies
+  | Movie 1
+    | Movie 1.mp4
+    | Movie 1.srt
+    | Movie 1.jpg
+    | Movie 1.mediainfo
+  | Movie 2
+    | ...
+  | ...
+```
+
+#### Collection with multiple groups (e.g. a TV series with multiple seasons)
+Each collection should be in its own sub-directory, with groups in sub-sub-directories, and items in sub-sub-sub-directories alongside any other relevant files.
+```
+My TV
+  | A TV Show
+    | global.mediainfo
+    | global.jpg
+    | Season 1
+      | Episode 1
+        | Episode 1.mp4
+        | Episode 1.srt
+        | Episode 1.jpg
+        | Episode 1.mediainfo
+      | Episode 2
+        | ...
+      | ...
+    | Season 2
+      | ...
+    | ...
+  | ...
+```
+
+#### Collection with a single group (e.g. an album a single tracklist)
+Each collection should be in its own sub-directory, with items in sub-sub-directories alongside any other relevant files.
+```
+My Albums
+  | An album
+    | global.mediainfo
+    | global.jpg
+    | Song 1
+      | Song 1.mp3
+      | Song 1.lrc
+      | Song 1.jpg
+      | Song 1.mediainfo
+    | ...
+  | ...
+```
 
 
 ## TODO
@@ -60,7 +134,7 @@ TODO...
  - [ ] Install, setup, and maintenance documentation
    - [ ] Document backend CLI usage
    - [X] Document JSON library structure
-   - [ ] Document file structure for automatic scanning
+   - [X] Document file structure for automatic scanning
  - [ ] Ability to queue entire collection groups to playlist
  - [ ] Ability to upload media files directly to server (+ option to fill out info manually and upload subs)
  - [X] Design UI
