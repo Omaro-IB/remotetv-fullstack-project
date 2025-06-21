@@ -21,7 +21,7 @@ const TextHighlighter = ({ dark, text, color }) => {
 const ScanPage = ({dark, displayMessage}) => {
     const [scanErrors, setScanErrors] = useState([]);
     const [scanWarnings, setScanWarnings] = useState([]);
-    const [displayR, setDisplayR] = useState(false);
+    const [scanCount, setScanCount] = useState(0);
 
     const refreshStatus = () => {
         services.scannerStatus().then(status => {
@@ -35,7 +35,10 @@ const ScanPage = ({dark, displayMessage}) => {
     useEffect(refreshStatus, [])
 
     const onRescanClick = () => {
-        services.rescanScanner().then(_ => setDisplayR(true)).catch(err => {
+        services.rescanScanner().then(_ => {
+            setScanCount(scanCount + 1)
+            refreshStatus()
+        }).catch(err => {
             console.log(err)
             displayMessage("Error rescaning", -1)
         })
@@ -45,8 +48,8 @@ const ScanPage = ({dark, displayMessage}) => {
         <div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
             <div className={"flex flex-1 w-fit mx-auto items-center h-20"}>
                 <strong>Click to update library changes: </strong>
-                <button className={displayR ? "hidden" : dark ? "bg-dark-primary-container text-dark-primary-container-on rounded-sm shadow-lg shadow-dark-shadow m-4 p-2" : "bg-primary-container text-primary-container-on rounded-sm shadow-lg m-4 p-2"} onClick={onRescanClick}>Rescan Library</button>
-                <p className={displayR ? "" : "hidden"}>&nbsp; Rescanned!</p>
+                <button className={dark ? "bg-dark-primary-container text-dark-primary-container-on rounded-sm shadow-lg shadow-dark-shadow m-4 p-2" : "bg-primary-container text-primary-container-on rounded-sm shadow-lg m-4 p-2"} onClick={onRescanClick}>Rescan Library</button>
+                <p className={scanCount === 0 ? "hidden" : ""}>&nbsp; {`(rescanned ${scanCount} ${scanCount === 1 ? 'time' : 'times'})`}</p>
             </div>
 
             <div className={scanErrors.length === 0 ? "hidden" : "flex flex-1 w-fit mx-auto items-center"}>
