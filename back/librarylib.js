@@ -12,7 +12,7 @@ const media_info_type = 'mediainfo'
 
 
 // Given list of extensions `[ext]` and directory `dir`, find (recursively) all files that have extension of one of `ext`
-const findFilesWithExtensions = (dir, extensions, result=[]) => {
+const findFilesWithExtensions = (dir, extensions, result=[], recurse=true) => {
     // Read the contents of the directory
     const filesAndDirs = fs.readdirSync(dir);
 
@@ -21,8 +21,8 @@ const findFilesWithExtensions = (dir, extensions, result=[]) => {
         const fullPath = path.join(dir, item);
         const stats = fs.statSync(fullPath);
 
-        // If it's a non-hidden directory, recurse
-        if (stats.isDirectory() && item[0] !== '.') {
+        // If it's a non-hidden directory, recurse if recurse is true
+        if (stats.isDirectory() && item[0] !== '.' && recurse) {
             findFilesWithExtensions(fullPath, extensions, result);
         } else {
             // If it's a file, check the extension
@@ -135,6 +135,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                 const SSDirsMediaFiles = []  // media files in each sub-sub-directory
                 const SDirMediaFiles = []  // media files in sub-directory
 
+                // 1) ANALYZE DIRECTORY STRUCTURE
                 // Sub-directory files and sub-sub-directories
                 sub_filesAndDirs.forEach(subDirItem => {
                     const itemS = path.join(subDir, subDirItem)
@@ -152,6 +153,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                     }
                 })
 
+                // 2) DEFINE HELPER FUNCTIONS
                 // Helper function that takes array of paths and translates it to array of items
                 const pathsToItems = (paths) => {
                     return paths.map(p => {
@@ -170,9 +172,71 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                     else {return [...Array(n).keys()].map(i => `${baseLabel} ${i+1}`)}
                 }
 
+                // 3) GET GLOBAL INFO
+                let global_info = {}
+                let global_img = undefined
+
+                // Check for global.ext files
+                let global_info_path = path.join(subDir, "global."+media_info_type)
+                let global_img_paths = []
+                for (const it of image_types) {if (fs.existsSync(path.join(subDir, "global."+it))) {global_img_paths.push(path.join(subDir, "global."+it))}}
+                if (fs.existsSync(global_info_path)) {
+                    try {
+                        global_info = JSON.parse(fs.readFileSync(global_info_path, 'utf8'))
+                    } catch {
+                        warnings.push(`[collection: ${subDir}]: failed to parse global.mediainfo as JSON`)
+                    }
+                }
+                if (global_img_paths.length > 0) {
+                    if (global_img_paths.length > 1) {warnings.push(`[collection: ${subDir}]: ambiguous global image file, found ${global_img_paths}`)}
+                    global_img = global_img_paths[0]
+                }
+
+                // If no global.image file, find any image files in sub-directory
+                if (global_img === undefined) {
+                    let other_global_img_paths = findFilesWithExtensions(subDir, image_types, [], false)
+                    if (other_global_img_paths.length > 0) {
+                        if (mediaInSDir) {
+                            if (other_global_img_paths.length === 1) {
+                                global_img = other_global_img_paths[0]
+                            }
+                        } else {
+                            if (other_global_img_paths.length > 1) {warnings.push(`[collection: ${subDir}]: ambiguous global image file, found ${other_global_img_paths}`)}
+                            global_img = other_global_img_paths[0]
+                        }
+                    }
+                }
+
+                // If no global.mediainfo file, file any mediainfo files in sub-directory
+                if (Object.keys(global_info).length === 0) {
+                    let other_global_info_paths = findFilesWithExtensions(subDir, [media_info_type], [], false)
+                    if (other_global_info_paths.length > 0) {
+                        if (mediaInSDir) {
+                            if (other_global_info_paths.length === 1) {
+                                try {
+                                    global_info = JSON.parse(fs.readFileSync(other_global_info_paths[0], 'utf8'))
+                                } catch {
+                                    warnings.push(`[collection: ${subDir}]: failed to parse global.mediainfo file ${other_global_info_paths[0]} as JSON`)
+                                }
+                            }
+                        } else {
+                            if (other_global_info_paths.length > 1) {
+                                warnings.push(`[collection: ${subDir}]: ambiguous global mediainfo file, found ${other_global_info_paths}`)
+                            }
+                            try {
+                                global_info = JSON.parse(fs.readFileSync(other_global_info_paths[0], 'utf8'))
+                            } catch {
+                                warnings.push(`[collection: ${subDir}]: failed to parse global.mediainfo file ${other_global_info_paths[0]} as JSON`)
+                            }
+                        }
+                    }
+                }
+
+                // 4) GET EACH ITEM INFO
                 const collectionItems = []
                 let collectionGroupLabels
                 const collectionItemLabels = []
+
                 // Construct collection for this sub-directory
                 if (mediaInSDir) {
                     if (SSDirN || SSDir1) {  // all sub-directory files in group 0, sub-sub directory files in rest of groups
@@ -210,16 +274,22 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                     }
                 }
 
+                // 5) CONSTRUCT COLLECTION AND ADD TO LIBRARY
                 if (collectionGroupLabels !== undefined) {
                     const this_collection = {
                         name: item,
                         items: collectionItems,
                         group_labels: collectionGroupLabels,
-                        item_labels: collectionItemLabels
+                        item_labels: collectionItemLabels,
+                        global_img: global_img,
+                        global_text: global_info.text,
+                        global_release: global_info.release === undefined ? undefined : (isNaN(parseInt(global_info.release)) ? undefined : parseInt(global_info.release)),
+                        global_quality: global_info.quality,
+                        global_language: global_info.language
                     }
 
                     const {error: col_error} = collections_schema.validate(this_collection)
-                    if (col_error) {console.log(this_collection); console.log(this_collection.items); errors.push(`$[collection ${subDir}]: error creating collection object from this directory`)}
+                    if (col_error) {errors.push(`$[collection ${subDir}]: error creating collection object from this directory`)}
                     else {library.push(this_collection)}
                 }
             }

@@ -34,11 +34,11 @@ const LibraryPage = ({dark, displayMessage}) => {
                     // Metadata depending on collection (use first group/item) or single
                     let image; let release; let quality; let language; let details; let hasSub
                     if ('items' in media) {  // collection
-                        image = (media.items[0][0].img === undefined) ? undefined : `url(${services.getImgUrl(mediaIndex, 0, 0)})`
-                        release = media.items[0][0].release
-                        quality = media.items[0][0].quality
-                        language = media.items[0][0].language
-                        details = media.items[0][0].text
+                        image = media.global_img === undefined ? ((media.items[0][0].img === undefined) ? undefined : `url(${services.getImgUrl(mediaIndex, 0, 0)})`) : `url(${services.getImgUrl(mediaIndex)})`
+                        release = media.global_release || media.items[0][0].release
+                        quality = media.global_quality || media.items[0][0].quality
+                        language = media.global_language || media.items[0][0].language
+                        details = media.global_text || media.items[0][0].text
                         hasSub = media.items[0][0].sub !== undefined
                     } else { // single
                         image = (media.item.img === undefined) ? undefined : `url(${services.getImgUrl(mediaIndex)})`
@@ -51,7 +51,7 @@ const LibraryPage = ({dark, displayMessage}) => {
 
                     const box_style = `flex flex-col my-3 sm:mx-4 bg-cover bg-center bg-no-repeat w-[90%] sm:w-1/5 shadow-2xl ${dark ? "shadow-dark-shadow" : ""} rounded`
 
-                    return(<div key={media.id} style={{backgroundImage: image}} className={box_style}>
+                    return(<div key={mediaIndex} style={{backgroundImage: image}} className={box_style}>
 
                         <div className={dark ? "flex flex-row justify-evenly m-5 bg-dark-surface-trans h-full max-h-72" : "flex flex-row justify-evenly m-5 bg-surface-trans h-full max-h-72"}>
 

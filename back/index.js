@@ -138,7 +138,7 @@ app.get('/status', (req, res) => {
 app.get('/image/:i0', (req, res) => {
     let img
     try {
-        img = library[req.params.i0]["item"]["img"]
+        img = library[req.params.i0]["global_img"] || library[req.params.i0]["item"]["img"]
         if (img === undefined) {res.status(404).send("No image found for this single"); return}
     } catch {
         res.status(400).send(`invalid index ${req.params.i0}`); return

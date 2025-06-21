@@ -43,7 +43,12 @@ const collections_schema = Joi.object({
     name: Joi.string(),
     items: Joi.array().items(Joi.array().items(item_schema).min(1)).min(1),
     group_labels: Joi.array().items(Joi.string()).min(1),
-    item_labels: Joi.array().items(Joi.array().items(Joi.string()).min(1)).min(1)
+    item_labels: Joi.array().items(Joi.array().items(Joi.string()).min(1)).min(1),
+    global_img: filepath_schema.optional(),
+    global_text: Joi.string().optional(),
+    global_release: Joi.number().optional(),
+    global_quality: Joi.string().optional(),
+    global_language: Joi.string().optional()
 }).custom((value, helpers) => {
     // group_labels length must equal # of groups and item_labels lengths must equal # of items in each group
     const {items: it, group_labels: gl, item_labels: il} = value
