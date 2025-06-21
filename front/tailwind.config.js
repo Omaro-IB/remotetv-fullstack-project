@@ -27,6 +27,7 @@ export default {
       'tertiary-container': '#FFD8E4',
       'tertiary-container-on': '#633B48',
       'error': '#B3261E',
+      'warning': '#EAC272',
       'error-on': '#FFFFFF',
       'error-container': '#F9DEDC',
       'error-container-on': '#8C1D18',

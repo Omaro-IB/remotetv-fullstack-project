@@ -6,7 +6,9 @@ import { MdError, MdWarning } from "react-icons/md";
 const TextHighlighter = ({ dark, text, color }) => {
     const first = text.split(']:', 1) + ']:'
     const second = text.substring(first.length)
-    const firstStyle = dark ? `text-dark-surface bg-[${color}]` : `bg-[${color}]`
+    let firstStyle
+    if (color === "error") {firstStyle = dark ? "text-dark-surface bg-error" : "bg-error"}
+    if (color === "warning") {firstStyle = dark ? "text-dark-surface bg-warning" : "bg-warning"}
     return (
         <p>
             <strong className={firstStyle}>{first}</strong>
@@ -54,7 +56,7 @@ const ScanPage = ({dark, displayMessage}) => {
             <div>
                 {scanErrors.map((e, i) => (
                     <div key={i} className={"my-2 mx-5 text-left"}>
-                        <TextHighlighter dark={dark} text={e[0]} color={"#B3261E"} />
+                        <TextHighlighter dark={dark} text={e[0]} color={"error"} />  {/*#B3261E*/}
                     </div>
                 ))}
             </div>
@@ -66,7 +68,7 @@ const ScanPage = ({dark, displayMessage}) => {
             <div>
                 {scanWarnings.map((w, i) => (
                     <div key={i} className={"my-2 mx-5 text-left"}>
-                        <TextHighlighter dark={dark} text={w[0]} color={"#EAC272"} />
+                        <TextHighlighter dark={dark} text={w[0]} color={"warning"} />  {/*#EAC272*/}
                     </div>
                 ))}
             </div>
