@@ -59,7 +59,7 @@ const ScanPage = ({dark, displayMessage}) => {
             <div>
                 {scanErrors.map((e, i) => (
                     <div key={i} className={"my-2 mx-5 text-left"}>
-                        <TextHighlighter dark={dark} text={e[0]} color={"error"} />  {/*#B3261E*/}
+                        <TextHighlighter dark={dark} text={e} color={"error"} />  {/*#B3261E*/}
                     </div>
                 ))}
             </div>
@@ -71,7 +71,7 @@ const ScanPage = ({dark, displayMessage}) => {
             <div>
                 {scanWarnings.map((w, i) => (
                     <div key={i} className={"my-2 mx-5 text-left"}>
-                        <TextHighlighter dark={dark} text={w[0]} color={"warning"} />  {/*#EAC272*/}
+                        <TextHighlighter dark={dark} text={w} color={"warning"} />  {/*#EAC272*/}
                     </div>
                 ))}
             </div>

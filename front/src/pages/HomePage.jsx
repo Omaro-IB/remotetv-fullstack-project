@@ -81,7 +81,7 @@ const HomePage = ({dark, displayMessage}) => {
             <div className={!isPlaying ? "hidden" : ""}>
                 <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed} pausePlayClick={pausePlayClick}
                         volume={volume} onSetVolume={onSetVolume} title={title} img={image} forwardClick={forwardClick} backClick={backClick} stopClick={stopClick}
-                        season={group} episode={item} subClick={onToggleSubs} details={details} hasSub={hasSub}/>
+                        refreshClick={refreshStatus} season={group} episode={item} subClick={onToggleSubs} details={details} hasSub={hasSub}/>
             </div>
             {/*  Info component - displayed if !isPlaying */}
             <div className={isPlaying ? "hidden" : ""}>

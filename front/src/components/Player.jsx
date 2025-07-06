@@ -1,6 +1,6 @@
 import Slider from '@mui/material/Slider';
 import {FaPause, FaPlay, FaForward, FaBackward, FaVolumeDown, FaAngleRight} from "react-icons/fa";
-import { MdOutlineSubtitles } from "react-icons/md";
+import {MdOutlineSubtitles, MdRefresh} from "react-icons/md";
 import { FaXmark } from "react-icons/fa6";
 
 const Container = ({children, dark, below}) => (
@@ -13,7 +13,7 @@ const Container = ({children, dark, below}) => (
     </div>
 )
 
-export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, season, episode, stopClick, backClick, forwardClick, subClick, details, hasSub}) {
+export default function Player({dark, timestamp, endTime, onSetTimestamp, isResumed, pausePlayClick, volume, onSetVolume, img, title, season, episode, stopClick, refreshClick, backClick, forwardClick, subClick, details, hasSub}) {
     function formatDuration(value) {
         const minute = Math.floor(value / 60);
         const secondLeft = Math.ceil(value - minute * 60);
@@ -29,10 +29,16 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
 
     return (
         <Container dark={dark} below={below}>
-            <div className={"mb-2 cursor-pointer flex flex-row items-center"} onClick={stopClick}>
-                <FaXmark className={dark ? "w-6 h-6 fill-error-container" : "w-6 h-6 fill-dark-error-container"} />
-                <p className={dark ? "text-sm ml-2 text-error-container" : "text-sm ml-2 text-dark-error-container"}> Stop Playback</p>
+            {/* Top buttons */}
+            <div className={"mb-4 flex flex-row justify-between"}>
+                <div className={"flex flex-row cursor-pointer"} onClick={stopClick}>
+                    <FaXmark className={dark ? "w-6 h-6 fill-error-container" : "w-6 h-6 fill-dark-error-container"}/>
+                    <p className={dark ? "text-sm text-error-container" : "text-sm text-dark-error-container"}> Stop playback</p>
+                </div>
+                <MdRefresh className={dark ? "w-6 h-6 fill-dark-surface-on cursor-pointer" : "w-6 h-6 fill-surface-on cursor-pointer"} onClick={refreshClick}/>
             </div>
+
+            {/* Image and labels */}
             <div className={"mb-4 grid grid-cols-2"}>
                 <div className={"w-32 h-32 overflow-hidden rounded-lg shadow-lg"}>
                     <img
@@ -49,6 +55,7 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                 </div>
             </div>
 
+            {/* Time seeker */}
             <div className={"flex items-center justify-between gap-3"}>
                 <p>{formatDuration(timestamp)}</p>
                 <Slider
@@ -58,7 +65,7 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                     min={0}
                     step={1}
                     max={endTime}
-                    onChange={(_, value) => onSetTimestamp(value)}
+                    onChangeCommitted={(_, value) => onSetTimestamp(value)}
                     sx={dark ? (_) => ({
                         color: 'rgba(255, 255, 255,0.87)',
                         height: 4,
@@ -75,9 +82,12 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                 <FaPause className={!isResumed ? "hidden" : "w-8 h-8 cursor-pointer"} onClick={pausePlayClick}></FaPause>
                 <FaForward className={"w-8 h-8 cursor-pointer"} onClick={forwardClick}></FaForward>
             </div>
+
+            {/* Volume control */}
             <div className={"flex items-center justify-between gap-3"}>
-                <FaVolumeDown className={"m-2"}/>
+                <FaVolumeDown className={"m-2 w-6 h-6"}/>
                 <Slider
+                    className={"ml-1"}
                     aria-label="Volume"
                     value={volume}
                     onChange={(_, value) => onSetVolume(value)}
@@ -118,8 +128,8 @@ export default function Player({dark, timestamp, endTime, onSetTimestamp, isResu
                         },
                     }))}
                 />
-                <div className={!hasSub ? "hidden" : (dark ? "z-10 w-12 h-fit ml-3 bg-dark-primary-on p-1 rounded cursor-pointer drop-shadow-md shadow-dark-shadow" : "z-10 w-fit h-fit ml-3 bg-primary-on p-1 rounded cursor-pointer drop-shadow-md")} onClick={subClick}>
-                    <MdOutlineSubtitles className={"w-8 h-8"} />
+                <div className={!hasSub ? "hidden" : (dark ? "z-10 w-12 h-fit ml-2 bg-dark-primary-on p-1 rounded cursor-pointer drop-shadow-md shadow-dark-shadow" : "z-10 w-fit h-fit ml-2 bg-primary-on p-1 rounded cursor-pointer drop-shadow-md")} onClick={subClick}>
+                    <MdOutlineSubtitles className={"w-6 h-6"} />
                 </div>
             </div>
         </Container>
