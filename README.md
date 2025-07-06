@@ -4,10 +4,20 @@ Alternative Smart TV built on MPV, React, and NodeJS
 
 ## Documentation
 ### Install
-TODO...
+1. Ensure you have installed: [mpv](https://mpv.io/installation/) and node (recommend using [node version manager](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating))
+2. Run the following commands to clone the repository and install node dependencies
+```
+git clone https://github.com/Omaro-IB/remotetv-fullstack-project/
+cd remotetv-fullstack-project/front/ && npm install && npm run build
+cd ../back && npm install
+```
+3. Done!
 
 ### Usage
-TODO...
+1. In `remotetv-fullstack-project/front/`, run `npm run preview -- --host` or `npm run preview -- --host --port 80` (requires admin)
+2. In `remotetv-fullstack-project/back/`, run `node index.js [--collection path/to/directory/] [--single path/to/directory] [--library path/to/json] [--...]`
+  - Note that you may specify multiple `--collection`, `--single`, or `--library`
+3. Visit one of the links shown in step 1. Ensure your firewall is not blocking port 4173 (or 80 if specified) and port 8945.
 
 ### Library JSON file format
 JSON library files may be specified with the `--library` option to manually specify (as opposed to relying on automatic file scanning) files, their metadata, and type.
