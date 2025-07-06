@@ -6,7 +6,7 @@ Alternative Smart TV built on MPV, React, and NodeJS
 ### Install
 1. Ensure you have installed: [mpv](https://mpv.io/installation/) and node (recommend using [node version manager](https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating))
 2. Run the following commands to clone the repository and install node dependencies
-```
+```bash
 git clone https://github.com/Omaro-IB/remotetv-fullstack-project/
 cd remotetv-fullstack-project/front/ && npm install && npm run build
 cd ../back && npm install
@@ -16,8 +16,8 @@ cd ../back && npm install
 ### Usage
 1. In `remotetv-fullstack-project/front/`, run `npm run preview -- --host` or `npm run preview -- --host --port 80` (requires admin)
 2. In `remotetv-fullstack-project/back/`, run `node index.js [--collection path/to/directory/] [--single path/to/directory] [--library path/to/json] [--...]`
-  - Note that you may specify multiple `--collection`, `--single`, or `--library`
-3. Visit one of the links shown in step 1. Ensure your firewall is not blocking port 4173 (or 80 if specified) and port 8945.
+	  - Note that you may specify multiple `--collection`, `--single`, or `--library`
+3. Visit one of the links shown in step 1. Ensure your firewall is not blocking port 4173 (or 80 if specified) or port 8945.
 
 ### Library JSON file format
 JSON library files may be specified with the `--library` option to manually specify (as opposed to relying on automatic file scanning) files, their metadata, and type.
@@ -51,11 +51,16 @@ A `collection` is specified as:
   "name": String,
   "items": [[Item, ...], ...]: nested array of Item objects (each inner array may be a season of a TV series for example),
   "group_labels": [String]: array of names of each group (ex. Season1, Season2, etc.). This must be equal in length as "items"
-  "item_labels": [[String, ...], ...]: array of names of each item (ex. name of each episode). This must be equal in shape as "items"
+  "item_labels": [[String, ...], ...]: array of names of each item (ex. name of each episode). This must be equal in shape as "items",
+  global_img: String: valid path to image file (optional),
+  global_text: String: any details or description (optional),  
+  global_release: Number: release date (optional), 
+  global_quality: String: quality of the media (optional),  
+  global_language: String: language of the media (optional)
 }
 ```
 
-The library format is therefore specified as:
+The library format is therefore specified as an array of singles or collections:
 ```json
 [Single | Collection, ...]
 ```
@@ -141,8 +146,8 @@ My Albums
 
 ## TODO
 ### General
- - [ ] Install, setup, and maintenance documentation
-   - [ ] Document backend CLI usage
+ - [x] Install, setup, and maintenance documentation
+   - [x] Document backend CLI usage
    - [X] Document JSON library structure
    - [X] Document file structure for automatic scanning
  - [ ] Ability to queue entire collection groups to playlist
