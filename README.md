@@ -52,11 +52,11 @@ A `collection` is specified as:
   "items": [[Item, ...], ...]: nested array of Item objects (each inner array may be a season of a TV series for example),
   "group_labels": [String]: array of names of each group (ex. Season1, Season2, etc.). This must be equal in length as "items"
   "item_labels": [[String, ...], ...]: array of names of each item (ex. name of each episode). This must be equal in shape as "items",
-  global_img: String: valid path to image file (optional),
-  global_text: String: any details or description (optional),  
-  global_release: Number: release date (optional), 
-  global_quality: String: quality of the media (optional),  
-  global_language: String: language of the media (optional)
+  "global_img": String: valid path to image file (optional),
+  "global_text": String: any details or description (optional),  
+  "global_release": Number: release date (optional), 
+  "global_quality": String: quality of the media (optional),  
+  "global_language": String: language of the media (optional)
 }
 ```
 
