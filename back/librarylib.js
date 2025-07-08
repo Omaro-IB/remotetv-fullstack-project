@@ -159,7 +159,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                     return paths.map(p => {
                         const [this_item, this_warnings] = getItemFromPath(p, `collection: ${subDir}`)
                         if (this_warnings.length > 0) {
-                            warnings.push(this_warnings)
+                            warnings.push(...this_warnings)
                         }
                         return this_item
                     })
