@@ -1,4 +1,4 @@
-import { FaCalendarAlt } from "react-icons/fa";
+import { FaCalendarAlt, FaSearch } from "react-icons/fa";
 import { LuSettings2 } from "react-icons/lu";
 import { IoLanguageSharp } from "react-icons/io5";
 import services from "../services.js"
@@ -13,6 +13,7 @@ const LibraryPage = ({dark, displayMessage}) => {
     const [lib, setLib] = useState([])
     const [collection, setCollection] = useState(undefined)
     const [ID, setID] = useState(-1)
+    const [filter, setFilter] = useState('')
 
     // Refresh data
     const refreshData = () => {
@@ -24,12 +25,20 @@ const LibraryPage = ({dark, displayMessage}) => {
 
     return (
         <div>
-            <div className="flex flex-wrap mt-10 justify-center">  {/* Project boxes div */}
+            {/* Search box */}
+            <div className={"flex flex-row w-full justify-center items-center mt-4"}>
+                <FaSearch className={dark ? "mx-2 w-5 h-5 fill-dark-surface-on" : "mx-2 w-5 h-5"} />
+                <input className={dark ? "bg-dark-surface h-8 text-lg text-dark-surface-on p-2" : "h-8 text-lg p-2"} value={filter} onChange={e => setFilter(e.target.value)} type={"text"} placeholder={"Search library"}/>
+            </div>
+
+            {/* Project boxes div */}
+            <div className="flex flex-wrap mt-4 justify-center">
                 {(lib.length === 0) ? (<div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
                     Nothing here yet.
                 </div>) : lib.map((media, mediaIndex) => {
                     // Media must have name
                     if (media.name === undefined) {return <div></div>}
+                    if (filter !== '' && !(media.name.toLowerCase().includes(filter.toLowerCase()))) {return <div></div>}
 
                     // Metadata depending on collection (use first group/item) or single
                     let image; let release; let quality; let language; let details; let hasSub
