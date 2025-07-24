@@ -167,9 +167,13 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
 
                 // Helper function that gets group labels from sample file
                 const getGroupLabels = (file, n) => {
-                    const baseLabel = audio_types.includes(path.extname(file).toLowerCase().substring(1)) ? "Tracklist" : "Collection"
-                    if (n === 1) {return [baseLabel]}
-                    else {return [...Array(n).keys()].map(i => `${baseLabel} ${i+1}`)}
+                    let gLabel
+                    if (audio_types.includes(path.extname(file).toLowerCase().substring(1))) {gLabel = "Tracklist"}
+                    else if (n === 1) {gLabel = "Collection"}
+                    else (gLabel = "Season")
+
+                    if (n === 1) {return [gLabel]}
+                    else {return [...Array(n).keys()].map(i => `${gLabel} ${i+1}`)}
                 }
 
                 // 3) GET GLOBAL INFO
