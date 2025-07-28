@@ -28,10 +28,10 @@ const HomePage = ({dark, displayMessage}) => {
     const [details, setDetails] = useState("");
 
     // Media Control API Calls
-    const pausePlayClick = () => {refreshStatus(); services.playPause().then(_ => setIsResumed(!isResumed)).catch(_ => displayMessage("Error playing/pausing", 2000)) }
+    async function pausePlayClick() {asyncRefreshStatus().then(s => {services.playPause().then(_ => setIsResumed(!s[0])).catch(_ => displayMessage("Error playing/pausing", 2000))})}
     const stopClick = () => {services.stop().then(_ => setIsPlaying(false)).catch(_ => displayMessage("Error stopping", 2000))}
-    async function forwardClick() {asyncRefreshStatus().then(t => {services.timestamp(Math.min(endTime, t + 10)).then(_ => setTimestamp(Math.min(endTime, t + 10))).catch(_ => displayMessage("Error skipping forward", 2000))})}
-    async function backClick() {asyncRefreshStatus().then(t => {services.timestamp(Math.max(0, t - 10)).then(_ => setTimestamp(Math.max(0, t - 10))).catch(_ => displayMessage("Error skipping back", 2000))})}
+    async function forwardClick() {asyncRefreshStatus().then(s => {services.timestamp(Math.min(endTime, s[1] + 10)).then(_ => setTimestamp(Math.min(endTime, s[1] + 10))).catch(_ => displayMessage("Error skipping forward", 2000))})}
+    async function backClick() {asyncRefreshStatus().then(s => {services.timestamp(Math.max(0, s[1] - 10)).then(_ => setTimestamp(Math.max(0, s[1] - 10))).catch(_ => displayMessage("Error skipping back", 2000))})}
     const onSetVolume = (v) => {services.volume(v).then(_ => setVolume(v)).catch(_ => displayMessage("Error changing volume", 2000))}
     const onSetTimestamp = (t) => {services.timestamp(t).then(_ => setTimestamp(t)).catch(_ => displayMessage("Error changing timestamp", 2000))}
     const onToggleSubs = () => {services.toggleSub().catch(_ => displayMessage("Error toggling sub", 2000))}
@@ -64,13 +64,13 @@ const HomePage = ({dark, displayMessage}) => {
                     sethasSub(thisItem["sub"] !== undefined || status.data["subsavailable"] === true)
                     setDetails(thisItem["text"] === undefined ? "" : thisItem["text"])
 
-                    resolve(status.data["time"])
+                    resolve([status.data["resumed"], status.data["time"]])
                 } else {
                     setIsPlaying(false)
                 }
             }).catch(_ => {
                 displayMessage("Error getting media player status from server", -1)
-                resolve()
+                resolve([null, null])
             })
         })
     }
