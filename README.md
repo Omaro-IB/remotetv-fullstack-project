@@ -158,6 +158,10 @@ My Albums
  - [X] Use [PM2](https://stackoverflow.com/questions/5999373/how-do-i-prevent-node-js-from-crashing-try-catch-doesnt-work) to stop crashes
 
 ### Frontend
+ - [X] Update player before performing any commands (esp. to avoid bugs where skipping ahead/behind is not accurate to the actual time)
+ - [X] Go to specific time
+ - [ ] Skip by x seconds instead of just 10 seconds
+ - [ ] Stripping file extensions and handling e## / s## / (YYYY) / [####p] patterns - also remember to add to documentation
  - [X] Library search
  - [X] Scanner page (errors and warnings & rescan button)
    - [X] Make look nicer
