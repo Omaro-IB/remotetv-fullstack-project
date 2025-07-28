@@ -6,20 +6,10 @@ import {MdOutlineSubtitles, MdRefresh} from "react-icons/md";
 import {FaAngleRight, FaBackward, FaForward, FaPause, FaPlay, FaVolumeDown} from "react-icons/fa";
 import Slider from "@mui/material/Slider";
 
-// Contianer div for media player
-const Container = ({children, dark, below}) => (
-    <div className={dark ? "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-dark-gradient1 via-dark-gradient2 to-dark-gradient3 p-8 min-h-screen h-full" : "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gradient1 via-gradient2 to-gradient3 p-8 min-h-screen h-full"}>
-        <div className={dark ? "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-dark-surface-trans backdrop-blur-2xl" : "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-surface-trans backdrop-blur-2xl"}>
-            {children}
-        </div>
-        {below}
-    </div>
-)
-
 // Format duration seconds -> mm:ss
 function formatDuration(value) {
     const minute = Math.floor(value / 60);
-    const secondLeft = Math.ceil(value - minute * 60);
+    const secondLeft = Math.ceil(value - minute * 60) - 1;
     return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`;
 }
 
@@ -38,51 +28,53 @@ const HomePage = ({dark, displayMessage}) => {
     const [details, setDetails] = useState("");
 
     // Media Control API Calls
-    const pausePlayClick = () => {services.playPause().then(_ => setIsResumed(!isResumed)).catch(_ => displayMessage("Error playing/pausing", 2000)) }
+    const pausePlayClick = () => {refreshStatus(); services.playPause().then(_ => setIsResumed(!isResumed)).catch(_ => displayMessage("Error playing/pausing", 2000)) }
     const stopClick = () => {services.stop().then(_ => setIsPlaying(false)).catch(_ => displayMessage("Error stopping", 2000))}
-    const backClick = () => {services.timestamp(Math.max(0, timestamp - 10)).then(_ => setTimestamp(Math.max(0, timestamp - 10))).catch(_ => displayMessage("Error skipping back", 2000))}
-    const forwardClick = () => {services.timestamp(Math.min(endTime, timestamp + 10)).then(_ => setTimestamp(Math.min(endTime, timestamp + 10))).catch(_ => displayMessage("Error skipping forward", 2000))}
+    async function forwardClick() {asyncRefreshStatus().then(t => {services.timestamp(Math.min(endTime, t + 10)).then(_ => setTimestamp(Math.min(endTime, t + 10))).catch(_ => displayMessage("Error skipping forward", 2000))})}
+    async function backClick() {asyncRefreshStatus().then(t => {services.timestamp(Math.max(0, t - 10)).then(_ => setTimestamp(Math.max(0, t - 10))).catch(_ => displayMessage("Error skipping back", 2000))})}
     const onSetVolume = (v) => {services.volume(v).then(_ => setVolume(v)).catch(_ => displayMessage("Error changing volume", 2000))}
     const onSetTimestamp = (t) => {services.timestamp(t).then(_ => setTimestamp(t)).catch(_ => displayMessage("Error changing timestamp", 2000))}
     const onToggleSubs = () => {services.toggleSub().catch(_ => displayMessage("Error toggling sub", 2000))}
 
     // Refresh Status on First Refresh + SSEs
-    const refreshStatus = () => {
-        services.getStatus().then(status => {
-            console.log(status)
+    async function asyncRefreshStatus() {
+        return new Promise(resolve => {
+            services.getStatus().then(status => {
+                if (!(status.data["playing"] === false)) {
+                    setIsPlaying(true)
+                    setTitle(status.data["playing"]["name"])
+                    setIsResumed(status.data["resumed"])
+                    setTimestamp(status.data["time"])
+                    setEndTime(status.data["endTime"])
+                    setVolume(status.data["volume"])
 
-            if (!(status.data["playing"] === false)) {
-                setIsPlaying(true)
-                setTitle(status.data["playing"]["name"])
-                setIsResumed(status.data["resumed"])
-                setTimestamp(status.data["time"])
-                setEndTime(status.data["endTime"])
-                setVolume(status.data["volume"])
+                    let thisItem
+                    if ('items' in status.data["playing"]) {  // collection
+                        // set collection-dependent hooks
+                        setGroup(status.data["playing"]["group_labels"][status.data["group"]])
+                        setItem(status.data["playing"]["item_labels"][status.data["group"]][status.data["item"]])
+                        thisItem = status.data["playing"]["items"][status.data["group"]][status.data["item"]]
+                        setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id, [status.data["group"]], [status.data["item"]]))
+                    } else {  // single
+                        // set single-dependent hooks
+                        thisItem = status.data["playing"]["item"]
+                        setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id))
+                    }
+                    // set general hooks
+                    sethasSub(thisItem["sub"] !== undefined || status.data["subsavailable"] === true)
+                    setDetails(thisItem["text"] === undefined ? "" : thisItem["text"])
 
-                let thisItem
-                if ('items' in status.data["playing"]) {  // collection
-                    // set collection-dependent hooks
-                    setGroup(status.data["playing"]["group_labels"][status.data["group"]])
-                    setItem(status.data["playing"]["item_labels"][status.data["group"]][status.data["item"]])
-                    thisItem = status.data["playing"]["items"][status.data["group"]][status.data["item"]]
-                    setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id, [status.data["group"]], [status.data["item"]]))
-                } else {  // single
-                    // set single-dependent hooks
-                    thisItem = status.data["playing"]["item"]
-                    setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id))
+                    resolve(status.data["time"])
+                } else {
+                    setIsPlaying(false)
                 }
-                // set general hooks
-                sethasSub(thisItem["sub"] !== undefined || status.data["subsavailable"] === true)
-                setDetails(thisItem["text"] === undefined ? "" : thisItem["text"])
-
-            } else {
-                setIsPlaying(false)
-            }
-        }).catch(err => {
-            console.log(err)
-            displayMessage("Error getting media player status from server", -1)
+            }).catch(_ => {
+                displayMessage("Error getting media player status from server", -1)
+                resolve()
+            })
         })
     }
+    const refreshStatus = () => {asyncRefreshStatus().then(_ => {})}
     useEffect(() => {setTimeout(refreshStatus, 500)}, []);  // refresh on first render after half a second  TODO: SSE
 
     // if media is playing, assume + 1 second every second
@@ -137,22 +129,7 @@ const HomePage = ({dark, displayMessage}) => {
                         {/* Time seeker */}
                         <div className={"flex items-center justify-between gap-3"}>
                             <p>{formatDuration(timestamp)}</p>
-                            <Slider
-                                aria-label="time-indicator"
-                                size="small"
-                                value={timestamp}
-                                min={0}
-                                step={1}
-                                max={endTime}
-                                onChangeCommitted={(_, value) => onSetTimestamp(value)}
-                                sx={dark ? (_) => ({
-                                    color: 'rgba(255, 255, 255,0.87)',
-                                    height: 4,
-                                }) : (_) => ({
-                                    color: 'rgba(0,0,0,0.87)',
-                                    height: 4,
-                                })}
-                            />
+                            <Slider aria-label="time-indicator" size="small" value={timestamp} min={0} step={1} max={endTime} onChangeCommitted={(_, value) => onSetTimestamp(value)} sx={dark ? (_) => ({color: 'rgba(255, 255, 255,0.87)', height: 4,}) : (_) => ({color: 'rgba(0,0,0,0.87)', height: 4,})}/>
                             <p>{formatDuration(endTime)}</p>
                         </div>
                         <div className={"flex justify-center gap-7 my-4"}>
