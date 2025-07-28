@@ -111,9 +111,11 @@ const LibraryPage = ({dark, displayMessage}) => {
             <div className={(collection === undefined ? "hidden" : "absolute top-0 left-0 w-full h-full")}>
                 <div className={dark ? "sticky top-10 mx-auto bg-dark-surface p-5 rounded-lg shadow-2xl shadow-dark-shadow w-5/6 sm:w-1/3 min-h-20 max-h-[90vh] h-fit overflow-auto" : "sticky top-10 mx-auto bg-surface p-5 rounded-lg shadow-2xl w-5/6 sm:w-1/3 min-h-20 max-h-[90vh] h-fit overflow-auto"}>
                     {/* Close selector */}
-                    <FaXmark
-                        className={dark ? "fill-dark-primary w-7 h-7 cursor-pointer mb-5" : "fill-primary w-7 h-7 cursor-pointer mb-5"}
-                        onClick={() => setCollection(undefined)}/>
+                    <div className={"w-7 h-7 mb-5"}>
+                        <button onClick={() => setCollection(undefined)}>
+                            <FaXmark className={dark ? "fill-dark-primary w-7 h-7" : "fill-primary w-7 h-7"}/>
+                        </button>
+                    </div>
                     {/* Selector */}
                     <div className={"flex flex-col overflow-scroll"}>
                         {(collection === undefined) ? "" : collection.items.map((group, group_index) => (
