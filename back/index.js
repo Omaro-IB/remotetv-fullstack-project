@@ -248,6 +248,11 @@ app.get('/togglesub', (req, res) => {
 
 // Set volume
 app.get('/volume/:volume', (req, res) => {
+  if (isNaN(req.params.volume) || isNaN(parseInt(req.params.volume))) {
+      res.status(400).send(`volume must be a positive integer`)
+      return
+  }
+
   mpv.volume(req.params.volume)
       .then(() => {
         res.status(200).send(`Successfully set volume`)
@@ -282,6 +287,11 @@ app.get('/stop', (req, res) => {
 
 // Set timestamp
 app.get('/timestamp/:timestamp', (req, res) => {
+    if (isNaN(req.params.timestamp) || isNaN(parseInt(req.params.timestamp))) {
+        res.status(400).send(`timestamp must be a positive integer`)
+        return
+    }
+
     getStatus().then((status) => {
         if (!status.playing) {res.status(402).send("No file is playing")}
         else {
