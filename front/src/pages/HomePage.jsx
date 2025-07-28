@@ -78,7 +78,7 @@ const HomePage = ({dark, displayMessage}) => {
                         setGroup(status.data["playing"]["group_labels"][status.data["group"]])
                         setItem(status.data["playing"]["item_labels"][status.data["group"]][status.data["item"]])
                         thisItem = status.data["playing"]["items"][status.data["group"]][status.data["item"]]
-                        setImage(thisItem["img"] === undefined ? (dark ? '/unknown_img_dark.png' : '/unknown_img.png') : services.getImgUrl(status.data.id, [status.data["group"]], [status.data["item"]]))
+                        setImage(thisItem["img"] === undefined ? (status.data["playing"]["global_img"] !== undefined ? services.getImgUrl(status.data["id"]) : (dark ? '/unknown_img_dark.png' : '/unknown_img.png')) : services.getImgUrl(status.data.id, [status.data["group"]], [status.data["item"]]))
                     } else {  // single
                         // set single-dependent hooks
                         thisItem = status.data["playing"]["item"]
@@ -86,7 +86,7 @@ const HomePage = ({dark, displayMessage}) => {
                     }
                     // set general hooks
                     sethasSub(thisItem["sub"] !== undefined || status.data["subsavailable"] === true)
-                    setDetails(thisItem["text"] === undefined ? "" : thisItem["text"])
+                    setDetails(thisItem["text"] === undefined ? (status.data["playing"]["global_text"] !== undefined ? status.data["playing"]["global_text"] : "") : thisItem["text"])
 
                     resolve([status.data["resumed"], status.data["time"]])
                 } else {
