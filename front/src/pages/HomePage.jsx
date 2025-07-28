@@ -1,7 +1,27 @@
 import {HashLink} from "react-router-hash-link";
-import Player from "../components/Player";
 import {useEffect, useState} from "react";
 import services from "../services.js";
+import {FaXmark} from "react-icons/fa6";
+import {MdOutlineSubtitles, MdRefresh} from "react-icons/md";
+import {FaAngleRight, FaBackward, FaForward, FaPause, FaPlay, FaVolumeDown} from "react-icons/fa";
+import Slider from "@mui/material/Slider";
+
+// Contianer div for media player
+const Container = ({children, dark, below}) => (
+    <div className={dark ? "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-dark-gradient1 via-dark-gradient2 to-dark-gradient3 p-8 min-h-screen h-full" : "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gradient1 via-gradient2 to-gradient3 p-8 min-h-screen h-full"}>
+        <div className={dark ? "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-dark-surface-trans backdrop-blur-2xl" : "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-surface-trans backdrop-blur-2xl"}>
+            {children}
+        </div>
+        {below}
+    </div>
+)
+
+// Format duration seconds -> mm:ss
+function formatDuration(value) {
+    const minute = Math.floor(value / 60);
+    const secondLeft = Math.ceil(value - minute * 60);
+    return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`;
+}
 
 const HomePage = ({dark, displayMessage}) => {
     // Media Status Hooks
@@ -65,6 +85,7 @@ const HomePage = ({dark, displayMessage}) => {
     }
     useEffect(() => {setTimeout(refreshStatus, 500)}, []);  // refresh on first render after half a second  TODO: SSE
 
+    // if media is playing, assume + 1 second every second
     const increaseSeconds = () => {
         if (timestamp >= endTime) {
             setIsPlaying(false)
@@ -74,18 +95,100 @@ const HomePage = ({dark, displayMessage}) => {
             return () => {clearInterval(interval)}
         }
     }
-    useEffect(increaseSeconds)  // if media is playing, assume + 1 second every second
+    useEffect(increaseSeconds)
 
     return (
         <div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
+            {/* Media player */}
             <div className={!isPlaying ? "hidden" : ""}>
-                <Player dark={dark} timestamp={timestamp} endTime={endTime} onSetTimestamp={onSetTimestamp} isResumed={isResumed} pausePlayClick={pausePlayClick}
-                        volume={volume} onSetVolume={onSetVolume} title={title} img={image} forwardClick={forwardClick} backClick={backClick} stopClick={stopClick}
-                        refreshClick={refreshStatus} season={group} episode={item} subClick={onToggleSubs} details={details} hasSub={hasSub}/>
+                <div className={dark ? "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-dark-gradient1 via-dark-gradient2 to-dark-gradient3 p-8 min-h-screen h-full" : "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gradient1 via-gradient2 to-gradient3 p-8 min-h-screen h-full"}>
+                    <div
+                        className={dark ? "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-dark-surface-trans backdrop-blur-2xl" : "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-surface-trans backdrop-blur-2xl"}>
+                        {/* Top buttons */}
+                        <div className={"mb-4 flex flex-row justify-between"}>
+                            <div className={"flex flex-row items-center cursor-pointer"} onClick={stopClick}>
+                                <FaXmark className={dark ? "w-6 h-6 fill-error-container" : "w-6 h-6 fill-dark-error-container"}/>
+                                <p className={dark ? "text-sm text-error-container" : "text-sm text-dark-error-container"}> Stop playback </p>
+                            </div>
+                            <div className={"flex flex-row items-center cursor-pointer"} onClick={refreshStatus}>
+                                <MdRefresh className={dark ? "w-6 h-6 fill-dark-surface-on" : "w-6 h-6 fill-surface-on"}/>
+                                <p className={dark ? "text-sm text-dark-surface-on" : "text-sm text-surface-on"}> Update status </p>
+                            </div>
+                        </div>
+
+                        {/* Image and labels */}
+                        <div className={"mb-4 grid grid-cols-2"}>
+                            <div className={"w-32 h-32 overflow-hidden rounded-lg shadow-lg"}>
+                                <img
+                                    alt={`Image for ${title}`}
+                                    src={image}
+                                />
+                            </div>
+                            <div className={"text-left h-32 overflow-scroll"}>
+                                <strong className={"text-lg"}>{title}</strong>
+                                <div className={(group === undefined || item === undefined) ? "hidden" : ""}>
+                                    <p className={"mt-1 italic"}>{group}</p>
+                                    <FaAngleRight className={"inline ml-0.5"}></FaAngleRight><p
+                                    className={"text-md inline"}>{item}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Time seeker */}
+                        <div className={"flex items-center justify-between gap-3"}>
+                            <p>{formatDuration(timestamp)}</p>
+                            <Slider
+                                aria-label="time-indicator"
+                                size="small"
+                                value={timestamp}
+                                min={0}
+                                step={1}
+                                max={endTime}
+                                onChangeCommitted={(_, value) => onSetTimestamp(value)}
+                                sx={dark ? (_) => ({
+                                    color: 'rgba(255, 255, 255,0.87)',
+                                    height: 4,
+                                }) : (_) => ({
+                                    color: 'rgba(0,0,0,0.87)',
+                                    height: 4,
+                                })}
+                            />
+                            <p>{formatDuration(endTime)}</p>
+                        </div>
+                        <div className={"flex justify-center gap-7 my-4"}>
+                            <FaBackward className={"w-8 h-8 cursor-pointer"} onClick={backClick}></FaBackward>
+                            <FaPlay className={isResumed ? "hidden" : "w-8 h-8 cursor-pointer"}
+                                    onClick={pausePlayClick}></FaPlay>
+                            <FaPause className={!isResumed ? "hidden" : "w-8 h-8 cursor-pointer"}
+                                     onClick={pausePlayClick}></FaPause>
+                            <FaForward className={"w-8 h-8 cursor-pointer"} onClick={forwardClick}></FaForward>
+                        </div>
+
+                        {/* Volume control */}
+                        <div className={"flex items-center justify-between gap-3"}>
+                            <FaVolumeDown className={"m-2 w-6 h-6"}/>
+                            <Slider className={"ml-1"} aria-label="Volume" value={volume} onChange={(_, value) => onSetVolume(value)} min={0} step={5} max={100} sx={dark ? ((_) => ({color: 'rgba(255,255,255,0.87)', '& .MuiSlider-track': {border: 'none',}, '& .MuiSlider-thumb': {width: 24, height: 24, backgroundColor: '#bfbfbf', '&::before': {boxShadow: '0 4px 8px rgba(0,0,0,0.4)',}, '&:hover, &.Mui-focusVisible, &.Mui-active': {boxShadow: 'none',},},})) : ((_) => ({color: 'rgba(0,0,0,0.87)', '& .MuiSlider-track': {border: 'none',}, '& .MuiSlider-thumb': {width: 24, height: 24, backgroundColor: '#fff', '&::before': {boxShadow: '0 4px 8px rgba(0,0,0,0.4)',}, '&:hover, &.Mui-focusVisible, &.Mui-active': {boxShadow: 'none',},},}))}/>
+                            <div
+                                className={!hasSub ? "hidden" : (dark ? "z-10 w-12 h-fit ml-2 bg-dark-primary-on p-1 rounded cursor-pointer drop-shadow-md shadow-dark-shadow" : "z-10 w-fit h-fit ml-2 bg-primary-on p-1 rounded cursor-pointer drop-shadow-md")}
+                                onClick={onToggleSubs}>
+                                <MdOutlineSubtitles className={"w-6 h-6"}/>
+                            </div>
+                            <div className={hasSub ? "hidden" : "w-14"}></div>
+                        </div>
+                    </div>
+
+                    {/* Media details if mediainfo is present */}
+                    <div className={details === "" ? "hidden" : "w-1/2 max-w-full mx-auto mt-10"}>
+                        <h1 className={"text-2xl"}><strong>Details:</strong></h1>
+                        <p className={"text-lg text-left mt-2"}>{details}</p>
+                    </div>
+                </div>
             </div>
+
             {/*  Info component - displayed if !isPlaying */}
             <div className={isPlaying ? "hidden" : ""}>
-                <div className={dark ? "bg-dark-surface rounded-lg px-6 py-8 shadow-xl shadow-dark-shadow w-11/12 mx-auto mt-10 flex flex-col items-start gap-4" : "bg-surface rounded-lg px-6 py-8 shadow-xl w-11/12 mx-auto mt-10 flex flex-col items-start gap-4"}>
+                <div
+                    className={dark ? "bg-dark-surface rounded-lg px-6 py-8 shadow-xl shadow-dark-shadow w-11/12 mx-auto mt-10 flex flex-col items-start gap-4" : "bg-surface rounded-lg px-6 py-8 shadow-xl w-11/12 mx-auto mt-10 flex flex-col items-start gap-4"}>
                     <p className={"text-left text-2xl sm:text-4xl"}> Nothing currently playing... </p>
                     <p className={"text-left text-xl sm:text-2xl"}>
                         Go to <span className={dark? "text-dark-primary underline" : "text-primary underline"}><HashLink to="/library">library</HashLink></span> to select something to play
