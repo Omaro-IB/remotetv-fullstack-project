@@ -1,17 +1,38 @@
 import {HashLink} from "react-router-hash-link";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import services from "../services.js";
 import {FaXmark} from "react-icons/fa6";
 import {MdOutlineSubtitles, MdRefresh} from "react-icons/md";
 import {FaAngleRight, FaBackward, FaForward, FaPause, FaPlay, FaVolumeDown} from "react-icons/fa";
 import Slider from "@mui/material/Slider";
 
-// Format duration seconds -> mm:ss
+// Format duration seconds -> minutes, seconds
 function formatDuration(value) {
     const minute = Math.floor(value / 60);
-    const secondLeft = Math.ceil(value - minute * 60) - 1;
-    return `${minute}:${secondLeft < 10 ? `0${secondLeft}` : secondLeft}`;
+    const second = Math.max(0, Math.ceil(value - minute * 60) - 1);
+    return [minute, second]
 }
+
+const TimeSelector = ({dark, onCloseClick, maxMinutes, minutes, seconds, onMinutesChange, onSecondsChange, onSubmit}) => (
+    <div>
+        {/* Close selector */}
+        <div className={"w-7 h-7 mb-5"}>
+            <button onClick={onCloseClick}>
+                <FaXmark className={dark ? "fill-dark-primary w-7 h-7" : "fill-primary w-7 h-7"}/>
+            </button>
+        </div>
+        {/* Selector */}
+        <div className={"flex flex-row w-fit mx-auto items-center"}>
+            <p className={"mr-2"}>Set time: </p>
+            <input className={dark ? "bg-dark-surface" : "bg-surface"} type="number" min="0" max={maxMinutes} value={minutes} onChange={(e) => {onMinutesChange(e.target.value)}}/>
+            <p className={"mx-2"}>:</p>
+            <input className={dark ? "bg-dark-surface" : "bg-surface"} type="number" min="0" max="60" value={seconds} onChange={(e) => {onSecondsChange(e.target.value)}}/>
+            <button onClick={onSubmit} className={dark ? "bg-dark-primary-container w-fit p-1 mx-1 text-dark-primary-container-on rounded drop-shadow-md shadow-dark-shadow ml-4" : "bg-primary-container w-fit p-1 mx-1 text-primary-container-on rounded drop-shadow-md ml-4"}>
+                Submit
+            </button>
+        </div>
+    </div>
+)
 
 const HomePage = ({dark, displayMessage}) => {
     // Media Status Hooks
@@ -26,6 +47,9 @@ const HomePage = ({dark, displayMessage}) => {
     const [image, setImage] = useState("");
     const [hasSub, sethasSub] = useState(false);
     const [details, setDetails] = useState("");
+
+    const [timeSelectorM, setTimeSelectorM] = useState(-1);
+    const [timeSelectorS, setTimeSelectorS] = useState(-1);
 
     // Media Control API Calls
     async function pausePlayClick() {asyncRefreshStatus().then(s => {services.playPause().then(_ => setIsResumed(!s[0])).catch(_ => displayMessage("Error playing/pausing", 2000))})}
@@ -89,6 +113,11 @@ const HomePage = ({dark, displayMessage}) => {
     }
     useEffect(increaseSeconds)
 
+    const endTimeMS = formatDuration(endTime)
+    const currentTimeMS = formatDuration(timestamp)
+    const formattedCurrentTime = `${currentTimeMS[0] < 10 ? `0${currentTimeMS[0]}` : currentTimeMS[0]}:${currentTimeMS[1] < 10 ? `0${currentTimeMS[1]}` : currentTimeMS[1]}`
+    const formattedEndTime = `${endTimeMS[0] < 10 ? `0${endTimeMS[0]}` : endTimeMS[0]}:${endTimeMS[1] < 10 ? `0${endTimeMS[1]}` : endTimeMS[1]}`
+
     return (
         <div className={dark ? "text-dark-surface-on" : "text-surface-on"}>
             {/* Media player */}
@@ -128,16 +157,14 @@ const HomePage = ({dark, displayMessage}) => {
 
                         {/* Time seeker */}
                         <div className={"flex items-center justify-between gap-3"}>
-                            <p>{formatDuration(timestamp)}</p>
+                            <button className={dark ? "underline text-dark-tertiary" : "underline text-tertiary"} onClick={() => {setTimeSelectorM(currentTimeMS[0]); setTimeSelectorS(currentTimeMS[1])}}>{formattedCurrentTime}</button>
                             <Slider aria-label="time-indicator" size="small" value={timestamp} min={0} step={1} max={endTime} onChangeCommitted={(_, value) => onSetTimestamp(value)} sx={dark ? (_) => ({color: 'rgba(255, 255, 255,0.87)', height: 4,}) : (_) => ({color: 'rgba(0,0,0,0.87)', height: 4,})}/>
-                            <p>{formatDuration(endTime)}</p>
+                            <p>{formattedEndTime}</p>
                         </div>
                         <div className={"flex justify-center gap-7 my-4"}>
                             <FaBackward className={"w-8 h-8 cursor-pointer"} onClick={backClick}></FaBackward>
-                            <FaPlay className={isResumed ? "hidden" : "w-8 h-8 cursor-pointer"}
-                                    onClick={pausePlayClick}></FaPlay>
-                            <FaPause className={!isResumed ? "hidden" : "w-8 h-8 cursor-pointer"}
-                                     onClick={pausePlayClick}></FaPause>
+                            <FaPlay className={isResumed ? "hidden" : "w-8 h-8 cursor-pointer"} onClick={pausePlayClick}></FaPlay>
+                            <FaPause className={!isResumed ? "hidden" : "w-8 h-8 cursor-pointer"} onClick={pausePlayClick}></FaPause>
                             <FaForward className={"w-8 h-8 cursor-pointer"} onClick={forwardClick}></FaForward>
                         </div>
 
@@ -170,6 +197,13 @@ const HomePage = ({dark, displayMessage}) => {
                     <p className={"text-left text-xl sm:text-2xl"}>
                         Go to <span className={dark? "text-dark-primary underline" : "text-primary underline"}><HashLink to="/library">library</HashLink></span> to select something to play
                     </p>
+                </div>
+            </div>
+
+            {/* Time selector */}
+            <div className={(timeSelectorM === -1 ? "hidden" : "absolute top-0 left-0 w-full h-full z-10")}>
+                <div className={dark ? "sticky top-10 mx-auto bg-dark-surface p-5 rounded-lg shadow-2xl shadow-dark-shadow w-fit px-102 min-h-20 max-h-[90vh] h-fit overflow-auto" : "sticky top-10 mx-auto bg-surface p-5 rounded-lg shadow-2xl w-fit px-10 min-h-20 max-h-[90vh] h-fit overflow-auto"}>
+                    <TimeSelector dark={dark} onCloseClick={() => setTimeSelectorM(-1)} maxMinutes={endTimeMS[0]} minutes={timeSelectorM} seconds={timeSelectorS} onMinutesChange={(m) => setTimeSelectorM(m)} onSecondsChange={(s) => setTimeSelectorS(s)} onSubmit={() => {onSetTimestamp(parseInt(timeSelectorM) * 60 + (parseInt(timeSelectorS) + 1))}}/>
                 </div>
             </div>
         </div>
