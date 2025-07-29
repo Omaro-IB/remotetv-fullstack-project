@@ -146,7 +146,7 @@ const HomePage = ({dark, displayMessage}) => {
                                 />
                             </div>
                             <div className={"text-left h-32 overflow-scroll"}>
-                                <strong className={"text-lg"}>{title}</strong>
+                                <strong className={"text-lg"}>{services.parseMediaFilename(title)["name"]}</strong>
                                 <div className={(group === undefined || item === undefined) ? "hidden" : ""}>
                                     <p className={"mt-1 italic"}>{group}</p>
                                     <FaAngleRight className={"inline ml-0.5"}></FaAngleRight><p
