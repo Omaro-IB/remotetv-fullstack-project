@@ -150,7 +150,7 @@ const HomePage = ({dark, displayMessage}) => {
                                 <div className={(group === undefined || item === undefined) ? "hidden" : ""}>
                                     <p className={"mt-1 italic"}>{group}</p>
                                     <FaAngleRight className={"inline ml-0.5"}></FaAngleRight><p
-                                    className={"text-md inline"}>{item}</p>
+                                    className={"text-md inline"}>{item === undefined ? undefined : services.formatEpisodeString(item)}</p>
                                 </div>
                             </div>
                         </div>

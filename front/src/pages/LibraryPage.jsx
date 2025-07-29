@@ -38,7 +38,11 @@ const LibraryPage = ({dark, displayMessage}) => {
                 </div>) : lib.map((media, mediaIndex) => {
                     // Media must have name
                     if (media.name === undefined) {return <div></div>}
-                    if (filter !== '' && !(media.name.toLowerCase().includes(filter.toLowerCase()))) {return <div></div>}
+                    const parsedName = services.parseMediaFilename(media.name)
+                    const name = parsedName["name"]
+
+                    // If filter is active, only display if matching filter
+                    if (filter !== '' && !(name.toLowerCase().includes(filter.toLowerCase()))) {return <div></div>}
 
                     // Metadata depending on collection (use first group/item) or single
                     let image; let release; let quality; let language; let details; let hasSub
@@ -58,6 +62,10 @@ const LibraryPage = ({dark, displayMessage}) => {
                         hasSub = media.item.sub !== undefined
                     }
 
+                    // Get more info from filename
+                    if (release === undefined) {release = parsedName["release"]}
+                    if (quality === undefined) {quality = parsedName["quality"]}
+
                     const box_style = `flex flex-col my-3 sm:mx-4 bg-cover bg-center bg-no-repeat w-[90%] sm:w-1/5 shadow-2xl ${dark ? "shadow-dark-shadow" : ""} rounded`
 
                     return(<div key={mediaIndex} style={{backgroundImage: image}} className={box_style}>
@@ -66,7 +74,7 @@ const LibraryPage = ({dark, displayMessage}) => {
 
                             {/* Media name and details */}
                             <div className={"overflow-auto flex flex-col w-full h-full"}>
-                                <strong className={dark ? "text-3xl text-left h-fit text-dark-surface-on" : "text-3xl text-left h-fit text-surface-on"}>{media.name}</strong>
+                                <strong className={dark ? "text-3xl text-left h-fit text-dark-surface-on" : "text-3xl text-left h-fit text-surface-on"}>{name}</strong>
                                 <strong className={dark ? "text-dark-surface-on h-fit text-left p-2" : "text-surface-on h-fit text-left p-2"}>{details}</strong>
                             </div>
 
@@ -133,7 +141,7 @@ const LibraryPage = ({dark, displayMessage}) => {
                                         // Item button
                                         <button key={item_index}
                                                 onClick={() => services.playByID(`${ID},${group_index},${item_index}`).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))} className={dark ? "bg-dark-primary-container w-fit p-1 mx-1 text-dark-primary-container-on rounded drop-shadow-md shadow-dark-shadow" : "bg-primary-container w-fit p-1 mx-1 text-primary-container-on rounded drop-shadow-md"}>
-                                            {`${collection.item_labels[group_index][item_index]}`}
+                                            {`${services.formatEpisodeString(collection.item_labels[group_index][item_index])}`}
                                         </button>
                                     )))}
                                 </AccordionDetails>

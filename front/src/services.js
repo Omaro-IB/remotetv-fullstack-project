@@ -84,4 +84,59 @@ const rescanScanner = () => {
     return axios.get(`${baseUrl}/rescan`)
 }
 
-export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, scannerStatus, rescanScanner}
+// Strip extension and extract quality/date if present in name
+function parseMediaFilename(filename) {
+    // Remove the file extension
+    const nameWithoutExtension = filename.replace(/\.[^/.]+$/, '');
+
+    // Extract the title
+    const titleMatch = nameWithoutExtension.match(/^(.*?)\s*(\(\d{4}\))?\s*(\[\d{3,4}p\])?$/);
+    let title = '', date = undefined, quality = undefined;
+
+    if (titleMatch) {
+        title = titleMatch[1].trim();
+
+        // Extract date (year)
+        const dateMatch = nameWithoutExtension.match(/\((\d{4})\)/);
+        if (dateMatch) {
+            date = parseInt(dateMatch[1], 10);
+        }
+
+        // Extract quality
+        const qualityMatch = nameWithoutExtension.match(/\[(\d{3,4}p)\]/);
+        if (qualityMatch) {
+            quality = qualityMatch[1];
+        }
+    }
+
+    return {
+        name: title,
+        quality: quality,
+        release: date
+    };
+}
+
+function formatEpisodeString(input) {
+    // Remove file extension if present
+    const base = input.replace(/\.[^/.]+$/, '').toLowerCase();
+
+    // Match "s##e##" pattern
+    const seasonEpisodeMatch = base.match(/^s(\d{1,2})e(\d{1,2})$/);
+    if (seasonEpisodeMatch) {
+        const season = parseInt(seasonEpisodeMatch[1], 10);
+        const episode = parseInt(seasonEpisodeMatch[2], 10);
+        return `Season ${season} Episode ${episode}`;
+    }
+
+    // Match "e##" pattern
+    const episodeOnlyMatch = base.match(/^e(\d{1,2})$/);
+    if (episodeOnlyMatch) {
+        const episode = parseInt(episodeOnlyMatch[1], 10);
+        return `Episode ${episode}`;
+    }
+
+    // Return input unchanged if no match
+    return input;
+}
+
+export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, scannerStatus, rescanScanner, parseMediaFilename, formatEpisodeString}
