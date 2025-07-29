@@ -78,23 +78,23 @@ const LibraryPage = ({dark, displayMessage}) => {
                                 <strong className={dark ? "text-dark-surface-on h-fit text-left p-2" : "text-surface-on h-fit text-left p-2"}>{details}</strong>
                             </div>
 
-                            {/* Release, quality, and language */}
-                            <div className={dark ? "text-lg text-left overflow-auto text-dark-surface-on h-full w-fit" : "text-lg text-left overflow-auto text-surface-on h-full w-fit"}>
-                                <div className={(release === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                    <FaCalendarAlt/>
-                                    <p>{release}</p>
+                            {/* Release, quality, language, and subs */}
+                            <div className={"flex flex-col h-full w-fit text-lg ml-2 overflow-clip"}>
+                                <div className={release === undefined ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
+                                    <FaCalendarAlt className={"w-4 h-4"} />
+                                    <p className={"w-12"}>{release}</p>
                                 </div>
-                                <div className={(quality === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                    <LuSettings2/>
-                                    <p>{quality}</p>
+                                <div className={quality === undefined ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
+                                    <LuSettings2 className={"w-4 h-4"} />
+                                    <p className={"w-12"}>{quality}</p>
                                 </div>
-                                <div className={(language === undefined) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                    <IoLanguageSharp/>
-                                    <p>{language}</p>
+                                <div className={language === undefined ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
+                                    <IoLanguageSharp className={"w-4 h-4"} />
+                                    <p className={"w-12"}>{language}</p>
                                 </div>
-                                <div className={(!hasSub) ? "hidden" : "flex flex-1 items-center space-x-1"}>
-                                    <MdOutlineSubtitles className={(hasSub ? "" : "hidden")} />
-                                    <p>subs</p>
+                                <div className={!hasSub ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
+                                    <MdOutlineSubtitles className={"w-4 h-4"} />
+                                    <p className={"w-12"}>subs</p>
                                 </div>
                             </div>
                         </div>
