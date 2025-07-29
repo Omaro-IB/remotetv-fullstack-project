@@ -79,7 +79,7 @@ const LibraryPage = ({dark, displayMessage}) => {
                             </div>
 
                             {/* Release, quality, language, and subs */}
-                            <div className={"flex flex-col h-full w-fit text-lg ml-2 overflow-clip"}>
+                            <div className={dark ? "flex flex-col h-full w-fit text-lg ml-2 overflow-clip text-dark-surface-on" : "flex flex-col h-full w-fit text-lg ml-2 overflow-clip text-surface-on"}>
                                 <div className={release === undefined ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
                                     <FaCalendarAlt className={"w-4 h-4"} />
                                     <p className={"w-12"}>{release}</p>
