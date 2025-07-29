@@ -124,7 +124,7 @@ const HomePage = ({dark, displayMessage}) => {
             <div className={!isPlaying ? "hidden" : ""}>
                 <div className={dark ? "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-dark-gradient1 via-dark-gradient2 to-dark-gradient3 p-8 min-h-screen h-full" : "bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gradient1 via-gradient2 to-gradient3 p-8 min-h-screen h-full"}>
                     <div
-                        className={dark ? "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-dark-surface-trans backdrop-blur-2xl" : "px-8 pb-8 py-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-surface-trans backdrop-blur-2xl"}>
+                        className={dark ? "p-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-dark-surface-trans backdrop-blur-2xl" : "p-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-surface-trans backdrop-blur-2xl"}>
                         {/* Top buttons */}
                         <div className={"mb-4 flex flex-row justify-between"}>
                             <div className={"flex flex-row items-center cursor-pointer"} onClick={stopClick}>
@@ -138,14 +138,15 @@ const HomePage = ({dark, displayMessage}) => {
                         </div>
 
                         {/* Image and labels */}
-                        <div className={"mb-4 grid grid-cols-2"}>
+                        <div className={"mb-4 flex flex-row"}>
                             <div className={"w-32 h-32 overflow-hidden rounded-lg shadow-lg"}>
                                 <img
+				    className={"w-full h-full object-cover"}
                                     alt={`Image for ${title}`}
                                     src={image}
                                 />
                             </div>
-                            <div className={"text-left h-32 overflow-scroll"}>
+                            <div className={"text-left ml-4 mr-auto w-fit h-full overflow-scroll"}>
                                 <strong className={"text-lg"}>{services.parseMediaFilename(title)["name"]}</strong>
                                 <div className={(group === undefined || item === undefined) ? "hidden" : ""}>
                                     <p className={"mt-1 italic"}>{group}</p>
