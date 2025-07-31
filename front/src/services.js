@@ -135,8 +135,8 @@ function formatEpisodeString(input) {
         return `Episode ${episode}`;
     }
 
-    // Return input unchanged if no match
-    return input;
+    // Return base file unchanged if no match
+    return base;
 }
 
 export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, scannerStatus, rescanScanner, parseMediaFilename, formatEpisodeString}
