@@ -48,14 +48,15 @@ const HomePage = ({dark, displayMessage}) => {
     const [hasSub, sethasSub] = useState(false);
     const [details, setDetails] = useState("");
 
+    const [skipBy, setSkipBy] = useState(10);
     const [timeSelectorM, setTimeSelectorM] = useState(-1);
     const [timeSelectorS, setTimeSelectorS] = useState(-1);
 
     // Media Control API Calls
     async function pausePlayClick() {asyncRefreshStatus().then(s => {services.playPause().then(_ => setIsResumed(!s[0])).catch(_ => displayMessage("Error playing/pausing", 2000))})}
     const stopClick = () => {services.stop().then(_ => setIsPlaying(false)).catch(_ => displayMessage("Error stopping", 2000))}
-    async function forwardClick() {asyncRefreshStatus().then(s => {services.timestamp(Math.min(endTime, s[1] + 10)).then(_ => setTimestamp(Math.min(endTime, s[1] + 10))).catch(_ => displayMessage("Error skipping forward", 2000))})}
-    async function backClick() {asyncRefreshStatus().then(s => {services.timestamp(Math.max(0, s[1] - 10)).then(_ => setTimestamp(Math.max(0, s[1] - 10))).catch(_ => displayMessage("Error skipping back", 2000))})}
+    async function forwardClick() {asyncRefreshStatus().then(s => {services.timestamp(Math.min(endTime, s[1] + skipBy)).then(_ => setTimestamp(Math.min(endTime, s[1] + skipBy))).catch(_ => displayMessage("Error skipping forward", 2000))})}
+    async function backClick() {asyncRefreshStatus().then(s => {services.timestamp(Math.max(0, s[1] - skipBy)).then(_ => setTimestamp(Math.max(0, s[1] - skipBy))).catch(_ => displayMessage("Error skipping back", 2000))})}
     const onSetVolume = (v) => {services.volume(v).then(_ => setVolume(v)).catch(_ => displayMessage("Error changing volume", 2000))}
     const onSetTimestamp = (t) => {services.timestamp(t).then(_ => setTimestamp(t)).catch(_ => displayMessage("Error changing timestamp", 2000))}
     const onToggleSubs = () => {services.toggleSub().catch(_ => displayMessage("Error toggling sub", 2000))}
@@ -127,21 +128,25 @@ const HomePage = ({dark, displayMessage}) => {
                         className={dark ? "p-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-dark-surface-trans backdrop-blur-2xl" : "p-4 rounded-2xl w-96 max-w-full m-auto relative z-[1] bg-surface-trans backdrop-blur-2xl"}>
                         {/* Top buttons */}
                         <div className={"mb-4 flex flex-row justify-between"}>
-                            <div className={"flex flex-row items-center cursor-pointer"} onClick={stopClick}>
-                                <FaXmark className={dark ? "w-6 h-6 fill-error-container" : "w-6 h-6 fill-dark-error-container"}/>
-                                <p className={dark ? "text-sm text-error-container" : "text-sm text-dark-error-container"}> Stop playback </p>
-                            </div>
-                            <div className={"flex flex-row items-center cursor-pointer"} onClick={refreshStatus}>
-                                <MdRefresh className={dark ? "w-6 h-6 fill-dark-surface-on" : "w-6 h-6 fill-surface-on"}/>
-                                <p className={dark ? "text-sm text-dark-surface-on" : "text-sm text-surface-on"}> Update status </p>
-                            </div>
+                            <button className={"flex flex-row items-center cursor-pointer"} onClick={stopClick}>
+                                <FaXmark
+                                    className={dark ? "w-6 h-6 fill-error-container" : "w-6 h-6 fill-dark-error-container"}/>
+                                <p className={dark ? "text-sm text-error-container" : "text-sm text-dark-error-container"}> Stop
+                                    playback </p>
+                            </button>
+                            <button className={"flex flex-row items-center cursor-pointer"} onClick={refreshStatus}>
+                                <MdRefresh
+                                    className={dark ? "w-6 h-6 fill-dark-surface-on" : "w-6 h-6 fill-surface-on"}/>
+                                <p className={dark ? "text-sm text-dark-surface-on" : "text-sm text-surface-on"}> Update
+                                    status </p>
+                            </button>
                         </div>
 
                         {/* Image and labels */}
                         <div className={"mb-4 flex flex-row"}>
                             <div className={"w-32 h-32 overflow-hidden rounded-lg shadow-lg"}>
                                 <img
-				    className={"w-full h-full object-cover"}
+                                    className={"w-full h-full object-cover"}
                                     alt={`Image for ${title}`}
                                     src={image}
                                 />
@@ -158,26 +163,72 @@ const HomePage = ({dark, displayMessage}) => {
 
                         {/* Time seeker */}
                         <div className={"flex items-center justify-between gap-3"}>
-                            <button className={dark ? "underline text-dark-tertiary" : "underline text-tertiary"} onClick={() => {setTimeSelectorM(currentTimeMS[0]); setTimeSelectorS(currentTimeMS[1])}}>{formattedCurrentTime}</button>
-                            <Slider aria-label="time-indicator" size="small" value={timestamp} min={0} step={1} max={endTime} onChangeCommitted={(_, value) => onSetTimestamp(value)} sx={dark ? (_) => ({color: 'rgba(255, 255, 255,0.87)', height: 4,}) : (_) => ({color: 'rgba(0,0,0,0.87)', height: 4,})}/>
+                            <button className={dark ? "underline text-dark-tertiary" : "underline text-tertiary"}
+                                    onClick={() => {
+                                        setTimeSelectorM(currentTimeMS[0]);
+                                        setTimeSelectorS(currentTimeMS[1])
+                                    }}>{formattedCurrentTime}</button>
+                            <Slider aria-label="time-indicator" size="small" value={timestamp} min={0} step={1}
+                                    max={endTime} onChangeCommitted={(_, value) => onSetTimestamp(value)}
+                                    sx={dark ? (_) => ({
+                                        color: 'rgba(255, 255, 255,0.87)',
+                                        height: 4,
+                                    }) : (_) => ({color: 'rgba(0,0,0,0.87)', height: 4,})}/>
                             <p>{formattedEndTime}</p>
                         </div>
-                        <div className={"flex justify-center gap-7 my-4"}>
-                            <FaBackward className={"w-8 h-8 cursor-pointer"} onClick={backClick}></FaBackward>
-                            <FaPlay className={isResumed ? "hidden" : "w-8 h-8 cursor-pointer"} onClick={pausePlayClick}></FaPlay>
-                            <FaPause className={!isResumed ? "hidden" : "w-8 h-8 cursor-pointer"} onClick={pausePlayClick}></FaPause>
-                            <FaForward className={"w-8 h-8 cursor-pointer"} onClick={forwardClick}></FaForward>
+
+                        {/* Back / Play / Forward buttons */}
+                        <div className={"ml-20 flex flex-row gap-7 my-4"}>
+                            <button onClick={backClick}><FaBackward className={"w-8 h-8 cursor-pointer"}></FaBackward>
+                            </button>
+                            <button onClick={pausePlayClick}><FaPlay
+                                className={isResumed ? "hidden" : "w-8 h-8 cursor-pointer"}></FaPlay> <FaPause
+                                className={!isResumed ? "hidden" : "w-8 h-8 cursor-pointer"}></FaPause></button>
+                            <button onClick={forwardClick}><FaForward className={"w-8 h-8 cursor-pointer"}></FaForward>
+                            </button>
+                            <div className={"w-10 flex flex-1"}>
+                                <input className={dark ? "bg-dark-surface" : "bg-surface"} type="number" min="0"
+                                       max={`99`}
+                                       value={skipBy} onChange={(e) => {
+                                    setSkipBy(parseInt(e.target.value))
+                                }}/>
+                                <p className={"ml-2"}> s </p>
+                            </div>
+                        </div>
+                        <div>
                         </div>
 
                         {/* Volume control */}
                         <div className={"flex items-center justify-between gap-3"}>
                             <FaVolumeDown className={"m-2 w-6 h-6"}/>
-                            <Slider className={"ml-1"} aria-label="Volume" value={volume} onChange={(_, value) => onSetVolume(value)} min={0} step={5} max={100} sx={dark ? ((_) => ({color: 'rgba(255,255,255,0.87)', '& .MuiSlider-track': {border: 'none',}, '& .MuiSlider-thumb': {width: 24, height: 24, backgroundColor: '#bfbfbf', '&::before': {boxShadow: '0 4px 8px rgba(0,0,0,0.4)',}, '&:hover, &.Mui-focusVisible, &.Mui-active': {boxShadow: 'none',},},})) : ((_) => ({color: 'rgba(0,0,0,0.87)', '& .MuiSlider-track': {border: 'none',}, '& .MuiSlider-thumb': {width: 24, height: 24, backgroundColor: '#fff', '&::before': {boxShadow: '0 4px 8px rgba(0,0,0,0.4)',}, '&:hover, &.Mui-focusVisible, &.Mui-active': {boxShadow: 'none',},},}))}/>
-                            <div
+                            <Slider className={"ml-1"} aria-label="Volume" value={volume}
+                                    onChange={(_, value) => onSetVolume(value)} min={0} step={5} max={100}
+                                    sx={dark ? ((_) => ({
+                                        color: 'rgba(255,255,255,0.87)',
+                                        '& .MuiSlider-track': {border: 'none',},
+                                        '& .MuiSlider-thumb': {
+                                            width: 24,
+                                            height: 24,
+                                            backgroundColor: '#bfbfbf',
+                                            '&::before': {boxShadow: '0 4px 8px rgba(0,0,0,0.4)',},
+                                            '&:hover, &.Mui-focusVisible, &.Mui-active': {boxShadow: 'none',},
+                                        },
+                                    })) : ((_) => ({
+                                        color: 'rgba(0,0,0,0.87)',
+                                        '& .MuiSlider-track': {border: 'none',},
+                                        '& .MuiSlider-thumb': {
+                                            width: 24,
+                                            height: 24,
+                                            backgroundColor: '#fff',
+                                            '&::before': {boxShadow: '0 4px 8px rgba(0,0,0,0.4)',},
+                                            '&:hover, &.Mui-focusVisible, &.Mui-active': {boxShadow: 'none',},
+                                        },
+                                    }))}/>
+                            <button
                                 className={!hasSub ? "hidden" : (dark ? "z-10 w-12 h-fit ml-2 bg-dark-primary-on p-1 rounded cursor-pointer drop-shadow-md shadow-dark-shadow" : "z-10 w-fit h-fit ml-2 bg-primary-on p-1 rounded cursor-pointer drop-shadow-md")}
                                 onClick={onToggleSubs}>
                                 <MdOutlineSubtitles className={"w-6 h-6"}/>
-                            </div>
+                            </button>
                             <div className={hasSub ? "hidden" : "w-14"}></div>
                         </div>
                     </div>
