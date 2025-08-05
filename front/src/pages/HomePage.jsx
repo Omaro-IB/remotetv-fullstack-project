@@ -4,6 +4,7 @@ import services from "../services.js";
 import {FaXmark} from "react-icons/fa6";
 import {MdOutlineSubtitles, MdRefresh} from "react-icons/md";
 import {FaAngleRight, FaBackward, FaForward, FaPause, FaPlay, FaVolumeDown} from "react-icons/fa";
+import { SlSpeech } from "react-icons/sl";
 import Slider from "@mui/material/Slider";
 
 // Format duration seconds -> minutes, seconds
@@ -46,6 +47,7 @@ const HomePage = ({dark, displayMessage}) => {
     const [item, setItem] = useState(undefined);
     const [image, setImage] = useState("");
     const [hasSub, sethasSub] = useState(false);
+    const [hasMultipleAudio, setHasMultipleAudio] = useState(false);
     const [details, setDetails] = useState("");
 
     const [skipBy, setSkipBy] = useState(10);
@@ -60,6 +62,7 @@ const HomePage = ({dark, displayMessage}) => {
     const onSetVolume = (v) => {services.volume(v).then(_ => setVolume(v)).catch(_ => displayMessage("Error changing volume", 2000))}
     const onSetTimestamp = (t) => {services.timestamp(t).then(_ => setTimestamp(t)).catch(_ => displayMessage("Error changing timestamp", 2000))}
     const onToggleSubs = () => {services.toggleSub().catch(_ => displayMessage("Error toggling sub", 2000))}
+    const onCycleAudio = () => {services.cycleAudio().catch(_ => displayMessage("Error cycling audio", 2000))}
 
     // Refresh Status on First Refresh + SSEs
     async function asyncRefreshStatus() {
@@ -87,6 +90,7 @@ const HomePage = ({dark, displayMessage}) => {
                     }
                     // set general hooks
                     sethasSub(thisItem["sub"] !== undefined || status.data["subsavailable"] === true)
+                    setHasMultipleAudio(status.data["multipleaudios"] === true)
                     setDetails(thisItem["text"] === undefined ? (status.data["playing"]["global_text"] !== undefined ? status.data["playing"]["global_text"] : "") : thisItem["text"])
 
                     resolve([status.data["resumed"], status.data["time"]])
@@ -229,7 +233,12 @@ const HomePage = ({dark, displayMessage}) => {
                                 onClick={onToggleSubs}>
                                 <MdOutlineSubtitles className={"w-6 h-6"}/>
                             </button>
-                            <div className={hasSub ? "hidden" : "w-14"}></div>
+                            <button
+                                className={!hasMultipleAudio ? "hidden" : (dark ? "z-10 w-12 h-fit bg-dark-primary-on p-1 rounded cursor-pointer drop-shadow-md shadow-dark-shadow" : "z-10 w-fit h-fit bg-primary-on p-1 rounded cursor-pointer drop-shadow-md")}
+                                onClick={onCycleAudio}>
+                                <SlSpeech className={"w-6 h-6 p-0.5"}/>
+                            </button>
+                            <div className={hasSub || hasMultipleAudio ? "hidden" : "w-14"}></div>
                         </div>
                     </div>
 

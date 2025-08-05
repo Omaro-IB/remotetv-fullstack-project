@@ -50,6 +50,11 @@ const toggleSub = () => {
     return axios.get(`${baseUrl}/togglesub`)
 }
 
+// GET /cycleaudio to cycle audio tracks
+const cycleAudio = () => {
+    return axios.get(`${baseUrl}/cycleaudio`)
+}
+
 // GET /stop to stop playback
 const stop = () => {
     return axios.get(`${baseUrl}/stop`)
@@ -139,4 +144,4 @@ function formatEpisodeString(input) {
     return base;
 }
 
-export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, scannerStatus, rescanScanner, parseMediaFilename, formatEpisodeString}
+export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, cycleAudio, scannerStatus, rescanScanner, parseMediaFilename, formatEpisodeString}

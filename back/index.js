@@ -26,7 +26,7 @@ app.disable('etag')
 
 
 const getStatus = () => {
-    let status = {"playing": undefined, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined, "subsavailable": undefined}
+    let status = {"playing": undefined, "resumed": undefined, "time": undefined, "endTime": undefined, "volume": undefined, "subsavailable": undefined, "multipleaudios": undefined}
     let no_catches = true
 
     // Set "playing" = info of playing media
@@ -69,9 +69,10 @@ const getStatus = () => {
         status["volume"] = volume
     }).catch((_) => {no_catches = false})
 
-    // set "subsavailable" = sub-end !== null
+    // set "subsavailable" = sub-end !== null & set "subsavailable" = sub-end !== null
     const promise6 = mpv.getProperty("track-list").then(list => {
         status["subsavailable"] = Array.isArray(list) ? list.some(l => l["type"] === "sub") : false
+        status["multipleaudios"] = Array.isArray(list) ? list.filter(l => l["type"] === "audio").length > 1 : false
     }).catch((_) => {no_catches = false})
 
     return new Promise((resolve) => {
@@ -242,6 +243,19 @@ app.get('/togglesub', (req, res) => {
                 .then(() => {
                     res.status(200).send(`Successfully toggled subtitles`)
                 }).catch((error) => {console.log('[removetv]: /togglesub/ error log:'); console.log(error); res.status(500).send(`Error toggling subtitles; see logs for more details`)})
+        }
+    })
+})
+
+// Cycle audio source
+app.get('/cycleaudio', (req, res) => {
+    getStatus().then((status) => {
+        if (!status.playing) {res.status(402).send("No file is playing")}
+        else {
+            mpv.cycleAudioTracks()
+                .then(() => {
+                    res.status(200).send(`Successfully cycled audio`)
+                }).catch((error) => {console.log('[removetv]: /cycleaudio/ error log:'); console.log(error); res.status(500).send(`Error cycling audio; see logs for more details`)})
         }
     })
 })
