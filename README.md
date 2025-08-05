@@ -160,7 +160,7 @@ My Albums
 ### Frontend
  - [X] Update player before performing any commands (esp. to avoid bugs where skipping ahead/behind is not accurate to the actual time)
  - [X] Go to specific time
- - [ ] Skip by x seconds instead of just 10 seconds
+ - [X] Skip by x seconds instead of just 10 seconds
  - [X] Stripping file extensions and handling e## / s## / (YYYY) / [####p] patterns - also remember to add to documentation
  - [X] Library search
  - [X] Scanner page (errors and warnings & rescan button)
