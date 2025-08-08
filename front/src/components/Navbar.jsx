@@ -11,27 +11,11 @@ const NavbarLink = ({dark, strikethrough, text}) => (
     </div>
 )
 
-const Navbar = ({dark, page, toggleDark}) => {
+const Navbar = ({dark, page, displayYouTube, toggleDark}) => {
     const [displayInfo, setDisplayInfo] = useState(false);
 
-    return (<div className={dark ? "bg-dark-primary-container flex flex-row justify-between sm:justify-start sm:space-x-10 py-5 px-10" : "bg-primary-container flex flex-row justify-between sm:justify-start sm:space-x-10 py-5 px-10 ring-slate-900/5 shadow-md"}>
-        {/* Info and dark buttons */}
-        <button onClick={() => setDisplayInfo(true)}>
-            <FaInfoCircle className={dark ? "w-5 h-5 fill-dark-surface-on" : "w-5 h-5 fill-surface-on"}/>
-        </button>
-        <button onClick={toggleDark}>
-            <FaSun className={!dark ? "hidden" : "w-5 h-5 fill-dark-surface-on"}></FaSun>
-            <FaMoon className={dark ? "hidden" : "w-5 h-5 fill-surface-on"}></FaMoon>
-        </button>
-
-        {/* Page Links */}
-        <HashLink to="/"><NavbarLink dark={dark} strikethrough={page === "Home"}
-                                     text={"TV Remote"}></NavbarLink></HashLink>
-        <HashLink to="/library"><NavbarLink dark={dark} strikethrough={page === "Library"}
-                                            text={"Library"}></NavbarLink></HashLink>
-        <HashLink to="/scan"><NavbarLink dark={dark} strikethrough={page === "Scan"}
-                                            text={"Scanner"}></NavbarLink></HashLink>
-
+    return (
+    <div>
         {/* Information screen */}
         <div className={displayInfo ? "absolute top-0 right-0 w-screen h-screen z-50" : "hidden"}>
             <div
@@ -54,7 +38,31 @@ const Navbar = ({dark, page, toggleDark}) => {
                 </div>
             </div>
         </div>
-    </div>)
+
+        <div className={dark ? "bg-dark-primary-container flex flex-row space-x-2 sm:space-x-10 justify-evenly sm:justify-start px-1 sm:px-5 py-5 ring-slate-900/5 shadow-md shadow-dark-shadow" : "bg-primary-container flex flex-row space-x-2 sm:space-x-10 justify-evenly sm:justify-start px-1 sm:px-5 py-5 ring-slate-900/5 shadow-md"}>
+            {/* Info and dark buttons */}
+            <button onClick={() => setDisplayInfo(true)}>
+                <FaInfoCircle className={dark ? "w-5 h-5 fill-dark-surface-on" : "w-5 h-5 fill-surface-on"}/>
+            </button>
+            <button onClick={toggleDark}>
+                <FaSun className={!dark ? "hidden" : "w-5 h-5 fill-dark-surface-on"}></FaSun>
+                <FaMoon className={dark ? "hidden" : "w-5 h-5 fill-surface-on"}></FaMoon>
+            </button>
+
+            {/* Page Links */}
+            <HashLink to="/"><NavbarLink dark={dark} strikethrough={page === "Home"}
+                                         text={"Remote"}></NavbarLink></HashLink>
+            <HashLink to="/library"><NavbarLink dark={dark} strikethrough={page === "Library"}
+                                                text={"Library"}></NavbarLink></HashLink>
+            <div className={displayYouTube ? "" : "hidden"}>
+                <HashLink to="/yt"><NavbarLink dark={dark} strikethrough={page === "Yt"}
+                                               text={"YouTube"}></NavbarLink></HashLink>
+            </div>
+            <HashLink to="/scan"><NavbarLink dark={dark} strikethrough={page === "Scan"}
+                                                text={"Scanner"}></NavbarLink></HashLink>
+        </div>
+    </div>
+    )
 }
 
 export default Navbar;

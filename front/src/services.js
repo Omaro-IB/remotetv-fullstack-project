@@ -35,6 +35,56 @@ const playByID = (id) => {
     })
 }
 
+// GET /ytdl/0 to check whether yt-dl is available
+function checkYouTubeAvailable() {
+    return new Promise((resolve, reject) => {
+        axios.get(`${baseUrl}/ytdl/0`).then(() => resolve(true)).catch((error) => {
+            if (error.response.status === 404) {resolve(false)}  // 404 means no yt-dl available
+            else if (error.response.status === 400) {resolve(true)}  // 400 means yt-dl is available but video ID of 0 is invalid
+            else {reject()}  // some other unexpected error occurred
+        })
+    })
+}
+
+// GET /ytdl/:vidid to play a YouTube video
+const playYouTube = (input) => {
+    return new Promise((resolve, reject) => {
+        let video_id
+
+        // Regular expression to match different types of YouTube URLs
+        const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        // Try to match the input against the regex
+        const match = input.match(regex);
+        if (match && match[1]) {
+            video_id = match[1]; // Extracted video ID from URL
+        }
+        // If it's not a full URL, check if it's a valid YouTube video ID
+        const isVideoId = /^[a-zA-Z0-9_-]{11}$/.test(input);
+        if (isVideoId) {
+            video_id = input; // It's already a video ID
+        }
+
+        // Invalid input
+        if (video_id === undefined) {reject()}
+        else {  // Valid input
+            const request = axios.get(`${baseUrl}/ytdl/${video_id}`)
+            request
+                .then(() => resolve())  // if request succeeds, then resolve promise
+                .catch((error) => {  // if not...
+                        if (error.response.status === 401) {  // if 401 error (MPV not started), ...
+                            initMPV();  // then try init-ing MPV
+                            setTimeout(() => {  // then a second later try request again
+                                axios.get(`${baseUrl}/ytdl/${video_id}`).then(() => resolve()).catch(() => reject())
+                            }, 1000);
+                        } else {
+                            reject();  // if not 500 error, then something else went wrong, and just reject the promise
+                        }
+                    }
+                )
+        }
+    })
+}
+
 // GET /status to get media player status
 const getStatus = () => {
     return axios.get(`${baseUrl}/status`)
@@ -144,4 +194,4 @@ function formatEpisodeString(input) {
     return base;
 }
 
-export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, cycleAudio, scannerStatus, rescanScanner, parseMediaFilename, formatEpisodeString}
+export default {getLibrary, playByID, playPause, getStatus, stop, volume, timestamp, getImgUrl, toggleSub, cycleAudio, scannerStatus, rescanScanner, parseMediaFilename, formatEpisodeString, playYouTube, checkYouTubeAvailable}

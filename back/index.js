@@ -12,12 +12,17 @@ import * as pathlib from 'path';
 // END: Imports
 
 // BEGIN: App initialization
-const directories = parseCli(process.argv)
-if (directories === undefined) {  // invalid or missing CLI arguments
+const parsed_args = parseCli(process.argv)
+if (parsed_args === undefined) {  // invalid or missing CLI arguments
     process.exit()
 }
-let {library, warnings, errors} = createLibrary(directories.collections_dirs, directories.single_dirs, directories.library_dirs)
-const mpv = new mpvAPI({"verbose": true}, ["--fullscreen"])
+let {library, warnings, errors} = createLibrary(parsed_args.collections_dirs, parsed_args.single_dirs, parsed_args.library_dirs)
+const mpv_args = ["--fullscreen"]
+if (parsed_args["ytdl_path"] !== null) {
+    mpv_args.push(`--script-opts=ytdl_hook-ytdl_path=${parsed_args["ytdl_path"]}`)
+    mpv_args.push("--ytdl=yes")
+}
+const mpv = new mpvAPI({"verbose": true}, mpv_args)
 const app = express()
 app.use(express.json())
 app.use(cors())
@@ -33,20 +38,28 @@ const getStatus = () => {
     const promise1 = mpv.getProperty("path").then(media_path => {
         let current_id = 0
 
-        // Find the media that is playing, and its group (if relevant) from path
-        toploop:
-            for (const media of library) {
-                if ('items' in media) {  // Media is a collection
-                    for (const [group_i, group] of media["items"].entries()) {
-                        for (const [item_i, item] of group.entries()) {
-                            if (item["path"] === media_path) {status["playing"] = media; status["id"] = current_id; status["group"] = group_i; status["item"] = item_i; break toploop}
-                        }
-                    }
-                } else {  // Media is a single
-                    if (media["item"]["path"] === media_path) {status["playing"] = media; status["id"] = current_id; break}
-                }
-                current_id++
+        if (parsed_args["ytdl_path"] !== null && media_path.startsWith("https://www.youtube.com/watch?v")) {  // YouTube video is playing
+            status["playing"] = {
+                name: `YouTube (${media_path})`,
+                item: {path: media_path}
             }
+        }
+        else {
+            // Find the media that is playing, and its group (if relevant) from path
+            toploop:
+                for (const media of library) {
+                    if ('items' in media) {  // Media is a collection
+                        for (const [group_i, group] of media["items"].entries()) {
+                            for (const [item_i, item] of group.entries()) {
+                                if (item["path"] === media_path) {status["playing"] = media; status["id"] = current_id; status["group"] = group_i; status["item"] = item_i; break toploop}
+                            }
+                        }
+                    } else {  // Media is a single
+                        if (media["item"]["path"] === media_path) {status["playing"] = media; status["id"] = current_id; break}
+                    }
+                    current_id++
+                }
+        }
     }).catch((_) => {no_catches = false})
 
     // Set "resumed" = true/false
@@ -109,7 +122,7 @@ app.get('/ls/', (req, res) => {
 
 // Rescan
 app.get('/rescan/', (req, res) => {
-    const {library: l, warnings: w, errors: e} = createLibrary(directories.collections_dirs, directories.single_dirs, directories.library_dirs)
+    const {library: l, warnings: w, errors: e} = createLibrary(parsed_args.collections_dirs, parsed_args.single_dirs, parsed_args.library_dirs)
     library = l; warnings = w; errors = e
     res.status(200).send(library)
 })
@@ -314,6 +327,28 @@ app.get('/timestamp/:timestamp', (req, res) => {
                     res.status(200).send(`Successfully set timestamp`)
                 }).catch((error) => {console.log(`[removetv]: /timestamp/${req.params.timestamp} error log:`); console.log(error); res.status(500).send(`Error setting timestamp, see logs for more details`)})
         }
+    })
+})
+
+// YouTube
+app.get('/ytdl/:vidcode', (req, res) => {
+    if (parsed_args["ytdl_path"] === null) {  // YouTube is unavailable
+        res.status(404).send("YouTube is not available (no --ytdl [path] option specified)")
+        return
+    }
+
+    const yt_regex = /[a-zA-Z0-9_-]{11}/
+    if (!yt_regex.test(req.params.vidcode)) {
+        res.status(400).send("video code must be a valid YouTube video code")
+        return
+    }
+
+    // Load path
+    mpv.load(`https://www.youtube.com/watch?v=${req.params.vidcode}`).then(() => {
+        res.status(200).send(`Successfully loaded video /${req.params.vidcode}`);
+    }).catch((error) => {
+        if (error["errcode"] === 8) {res.status(401).send(`MPV is not running, make sure to GET /init first`)}
+        else {console.log(`[removetv]: /load/${req.params.id} error log:`); console.log(error); res.status(500).send(`error loading; see logs for more details`)}
     })
 })
 // END: Endpoints for controls
