@@ -15,8 +15,9 @@ cd ../back && npm install
 
 ### Usage
 1. In `remotetv-fullstack-project/front/`, run `npm run preview -- --host` or `npm run preview -- --host --port 80` (requires admin)
-2. In `remotetv-fullstack-project/back/`, run `node index.js [--collection path/to/directory/] [--single path/to/directory] [--library path/to/json] [--...]`
+2. In `remotetv-fullstack-project/back/`, run `node index.js [--collection path/to/directory/] [--single path/to/directory] [--library path/to/json] [--ytdl /path/to/yt-dlp] [--...]`
 	  - Note that you may specify multiple `--collection`, `--single`, or `--library`
+      - The `--ytdl` option allows you to specify the path to your [yt-dlp](https://github.com/yt-dlp/yt-dlp) binary to access YouTube videos
 3. Visit one of the links shown in step 1. Ensure your firewall is not blocking port 4173 (or 80 if specified) or port 8945.
 
 ### Library JSON file format
