@@ -20,7 +20,7 @@ cd ../back && npm install
       - The `--ytdl` option allows you to specify the path to your [yt-dlp](https://github.com/yt-dlp/yt-dlp) binary to access YouTube videos
 3. Visit one of the links shown in step 1. Ensure your firewall is not blocking port 4173 (or 80 if specified) or port 8945.
 
-### Library JSON file format2
+### Library JSON file format
 JSON library files may be specified with the `--library` option to manually specify (as opposed to relying on automatic file scanning) files, their metadata, and type.
 
 A library file must follow a strict format. It consists of a root array of `collection` and `single` objects. A `collection` is a collection of related media files (ex. tv series or album), while a `single` is a single media file (ex. movie or single song). These both use `item` objects to specify file paths, their metadata, and type.
