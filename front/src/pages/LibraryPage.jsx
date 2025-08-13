@@ -82,19 +82,19 @@ const LibraryPage = ({dark, displayMessage}) => {
                             <div className={dark ? "flex flex-col h-full w-fit text-lg ml-2 overflow-clip text-dark-surface-on" : "flex flex-col h-full w-fit text-lg ml-2 overflow-clip text-surface-on"}>
                                 <div className={release === undefined ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
                                     <FaCalendarAlt className={"w-4 h-4"} />
-                                    <p className={"w-12"}>{release}</p>
+                                    <p className={"w-full h-full overflow-hidden whitespace-nowrap text-clip text-left"}>&nbsp; {release}</p>
                                 </div>
                                 <div className={quality === undefined ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
                                     <LuSettings2 className={"w-4 h-4"} />
-                                    <p className={"w-12"}>{quality}</p>
+                                    <p className={"w-full h-full overflow-hidden whitespace-nowrap text-clip text-left"}>&nbsp; {quality}</p>
                                 </div>
                                 <div className={language === undefined ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
                                     <IoLanguageSharp className={"w-4 h-4"} />
-                                    <p className={"w-12"}>{language}</p>
+                                    <p className={"w-full h-full overflow-hidden whitespace-nowrap text-clip text-left"}>&nbsp; {language}</p>
                                 </div>
                                 <div className={!hasSub ? "hidden" : "w-[67px] h-8 flex flex-row items-center"}>
                                     <MdOutlineSubtitles className={"w-4 h-4"} />
-                                    <p className={"w-12"}>subs</p>
+                                    <p className={"w-full h-full overflow-hidden whitespace-nowrap text-clip text-left"}>&nbsp; subs</p>
                                 </div>
                             </div>
                         </div>
