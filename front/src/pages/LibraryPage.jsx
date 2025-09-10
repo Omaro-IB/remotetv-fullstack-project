@@ -8,12 +8,25 @@ import { FaXmark } from "react-icons/fa6";
 import {Accordion, AccordionDetails, AccordionSummary} from "@mui/material";
 import { MdExpandMore, MdOutlineSubtitles } from "react-icons/md";
 
+
 const LibraryPage = ({dark, displayMessage}) => {
     const navigate = useNavigate()
     const [lib, setLib] = useState([])
     const [collection, setCollection] = useState(undefined)
     const [ID, setID] = useState(-1)
     const [filter, setFilter] = useState('')
+
+
+    function group_to_divlist(group, group_index) {
+        let divlist = []
+        for (let i = 0; i < group.length; i++) {
+            const onClickFun = () => services.playByID(`${ID},${group_index},${i}`).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))
+            divlist.push(<button className={group[i].text === undefined ? (dark ? "bg-dark-primary text-dark-primary-on border-b-2 border-dark-primary-on p-2 col-span-3" : "bg-primary text-primary-on border-b-2 border-primary-on p-2 col-span-3") : (dark ? "bg-dark-primary text-dark-primary-on border-b-2 border-dark-primary-on p-2" : "bg-primary text-primary-on border-b-2 border-primary-on p-2")} key={`${i}-0`} onClick={onClickFun}>{`${services.formatEpisodeString(collection.item_labels[group_index][i], group[i].episode_name)}`}</button>)
+            if (group[i].text !== undefined) {divlist.push(<button key={`${i}-1`} className={group[i].text === undefined ? "bg-dark-primary border-b-2 border-dark-primary-on col-span-2" : "text-left col-span-2 p-2"} onClick={onClickFun}>{group[i].text}</button>)}
+        }
+        return divlist
+    }
+
 
     // Refresh data
     const refreshData = () => {
@@ -133,17 +146,12 @@ const LibraryPage = ({dark, displayMessage}) => {
                                     className={dark ? "fill-dark-surface-on" : "fill-surface-on"}/>}
                                                   aria-controls="panel1-content" id="panel1-header"
                                                   style={dark ? {backgroundColor: "#141218"} : {backgroundColor: "#FEF7FF"}}>
-                                    <p className={dark ? "text-dark-surface-on" : "text-surface-on"}>{`${collection.group_labels[group_index]}`}</p>
+                                    <button className={dark ? "text-dark-surface-on" : "text-surface-on"}>{`${collection.group_labels[group_index]}`}</button>
                                 </AccordionSummary>
-                                <AccordionDetails
-                                    className={dark ? "bg-dark-surface text-dark-surface-on" : "bg-surface text-surface-on"}>
-                                    {group.map(((item, item_index) => (
-                                        // Item button
-                                        <button key={item_index}
-                                                onClick={() => services.playByID(`${ID},${group_index},${item_index}`).then(() => navigate("/")).catch(() => displayMessage("Error playing this media", 2000))} className={dark ? "bg-dark-primary-container w-fit p-1 mx-1 text-dark-primary-container-on rounded drop-shadow-md shadow-dark-shadow" : "bg-primary-container w-fit p-1 mx-1 text-primary-container-on rounded drop-shadow-md"}>
-                                            {`${services.formatEpisodeString(collection.item_labels[group_index][item_index])}`}
-                                        </button>
-                                    )))}
+                                <AccordionDetails className={dark ? "bg-dark-surface text-dark-surface-on" : "bg-surface text-surface-on"}>
+                                    <div className={"grid grid-cols-3 "}>
+                                        {group_to_divlist(group, group_index)}
+                                    </div>
                                 </AccordionDetails>
                             </Accordion>
                         ))}

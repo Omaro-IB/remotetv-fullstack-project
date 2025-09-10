@@ -1,8 +1,9 @@
 import axios from 'axios'
 
 // Assumes backend is hosted on same machine on port 8945
-const origin = window.location.origin.split(":")
-const baseUrl = `${origin[0]}:${origin[1]}:8945`
+// const origin = window.location.origin.split(":")
+// const baseUrl = `${origin[0]}:${origin[1]}:8945`
+const baseUrl = "http://o.flix:8945"  // TODO: Change back (do not commit this)
 
 // GET /init to initialize mpv
 const initMPV = () => {
@@ -171,7 +172,7 @@ function parseMediaFilename(filename) {
     };
 }
 
-function formatEpisodeString(input) {
+function formatEpisodeString(input, name=undefined) {
     // Remove file extension if present
     const base = input.replace(/\.[^/.]+$/, '').toLowerCase();
 
@@ -180,14 +181,17 @@ function formatEpisodeString(input) {
     if (seasonEpisodeMatch) {
         const season = parseInt(seasonEpisodeMatch[1], 10);
         const episode = parseInt(seasonEpisodeMatch[2], 10);
-        return `Season ${season} Episode ${episode}`;
+        if (name === undefined) {return `Season ${season} Episode ${episode}`}
+        else {return `Season ${season} Episode ${episode}: ${name}`}
+
     }
 
     // Match "e##" pattern
     const episodeOnlyMatch = base.match(/^e(\d{1,2})$/);
     if (episodeOnlyMatch) {
         const episode = parseInt(episodeOnlyMatch[1], 10);
-        return `Episode ${episode}`;
+        if (name === undefined) {return `Episode ${episode}`}
+        else {return `${episode}. ${name}`}
     }
 
     // Return base file unchanged if no match

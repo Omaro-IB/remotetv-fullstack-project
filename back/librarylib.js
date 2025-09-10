@@ -87,6 +87,7 @@ const getItemFromPath = (media_path, warning_label) => {
             img: img_path,
             sub: sub_path,
             text: info.text,
+            episode_name: info.episode_name,
             release: info.release === undefined ? undefined : (isNaN(parseInt(info.release)) ? undefined : parseInt(info.release)),
             quality: info.quality,
             language: info.language

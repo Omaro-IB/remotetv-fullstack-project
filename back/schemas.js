@@ -33,6 +33,7 @@ const item_schema = Joi.object().keys({
     img: filepath_schema.optional(),
     sub: filepath_schema.optional(),
     text: Joi.string().optional(),
+    episode_name: Joi.string().optional(),
     release: Joi.number().optional(),
     quality: Joi.string().optional(),
     language: Joi.string().optional()
