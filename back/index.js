@@ -21,6 +21,7 @@ const mpv_args = ["--fullscreen"]
 if (parsed_args["ytdl_path"] !== null) {
     mpv_args.push(`--script-opts=ytdl_hook-ytdl_path=${parsed_args["ytdl_path"]}`)
     mpv_args.push("--ytdl=yes")
+    mpv_args.push("--ytdl-format=bestvideo[height<=?720][fps<=?30][vcodec!=?vp9]+bestaudio/best")  // use 720p 30fps
 }
 const mpv = new mpvAPI({"verbose": true}, mpv_args)
 const app = express()

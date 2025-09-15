@@ -1,9 +1,8 @@
 import axios from 'axios'
 
 // Assumes backend is hosted on same machine on port 8945
-// const origin = window.location.origin.split(":")
-// const baseUrl = `${origin[0]}:${origin[1]}:8945`
-const baseUrl = "http://o.flix:8945"  // TODO: Change back (do not commit this)
+const origin = window.location.origin.split(":")
+const baseUrl = `${origin[0]}:${origin[1]}:8945`
 
 // GET /init to initialize mpv
 const initMPV = () => {
