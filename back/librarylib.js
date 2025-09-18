@@ -259,7 +259,11 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                     }
                 } else {
                     if (SSDirN) {  // sub-sub directory files for each group
-                        collectionGroupLabels = getGroupLabels(SSDirsMediaFiles[0][0], SSDirsMediaFiles.length)
+                        if (SSDirsMediaFiles.length === 1) {  // group label should be the sub-sub directory's name}  // only one sub-sub directory -> use its name as group label
+                            let groupLabel = path.basename(path.dirname(SSDirsMediaFiles[0][0]))
+                            if ((/^s\d+$/).test(groupLabel)) {groupLabel = `Season ${parseInt(groupLabel.slice(1))}`}  // parse s## to Season ##
+                            collectionGroupLabels = [groupLabel]
+                        } else {collectionGroupLabels = getGroupLabels(SSDirsMediaFiles[0][0], SSDirsMediaFiles.length)}
                         SSDirsMediaFiles.forEach(x => {
                             collectionItems.push(pathsToItems(x))
                             collectionItemLabels.push(x.map(p => path.basename(p)))
