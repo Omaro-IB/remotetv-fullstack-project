@@ -5,7 +5,6 @@ import path from 'path';
 
 
 const media_types = ['3d0', '3g2', '3gp', '4xm', '8svx', 'a64', 'aa', 'aac', 'aax', 'ac3', 'ace', 'acm', 'act', 'adf', 'adp', 'ads', 'adts', 'adx', 'aea', 'afc', 'aiff', 'aix', 'alac', 'alaw', 'alias_pix', 'alp', 'alsa', 'amr', 'amrnb', 'amrwb', 'amv', 'anm', 'apc', 'ape', 'apm', 'apng', 'aptx', 'asf', 'ast', 'au', 'av1', 'awb', 'avi', 'avif', 'avm2', 'avr', 'avs', 'avs2', 'avs3', 'bfi', 'bmv', 'boa', 'brender_pix', 'brstm', 'c93', 'caca', 'caf', 'cda', 'cdg', 'cdxl', 'crc', 'dfa', 'dsf', 'dss', 'dts', 'dv', 'dv4', 'dvd', 'dxa', 'dhav', 'cine', 'bfstm', 'bink', 'binka', 'dash', 'data', 'daud', 'derf', 'ea', 'eac3', 'epaf', 'f4v', 'f4p', 'flac', 'frm', 'fsb', 'flic', 'flv', 'f4a', 'f4b', 'f4v', 'f32be', 'f32le', 'f64be', 'f64le', 'fbdev', 'fifo', 'fifo_test', 'fits', 'gdv', 'gif', 'gifv', 'gsm', 'gxf', 'hca', 'hls', 'hnm', 'ico', 'idcin', 'idf', 'iec61883', 'iff', 'ifv', 'ipu', 'iss', 'iv8', 'ivf', 'ivs', 'ivr', 'imf', 'iklax', 'ipod', 'ircam', 'ismv', 'jv', 'kux', 'kvag', 'loas', 'latm', 'lvf', 'lxf', 'm4v', 'mkv', 'webm', 'mca', 'mgsts', 'mjpeg', 'mlp', 'mlv', 'mm', 'mmf', 'mods', 'moflex', 'mov', 'qt', 'm4a', 'm4b', '3g2', 'm2v', 'mp2', 'mp3', 'mp4', 'm4p', 'mpg', 'mpe', 'mpv', 'mpc', 'mpc8', 'mpeg', 'mpeg4', 'mpegts', 'mpeg1', 'mpeg2', 'mpjpeg', 'msf', 'msnwctcp', 'msp', 'mtaf', 'mtv', 'mulaw', 'musx', 'mv', 'mvi', 'mxf', 'mxf_d10', 'mxf_opatom', 'mxg', 'mogg', 'nmf', 'nc', 'nsp', 'nsv', 'null', 'nut', 'nuv', 'obu', 'oga', 'ogg', 'ogv', 'oma', 'opus', 'oss', 'paf', 'pmp', 'psp', 'pva', 'pvf', 'qcp', 'pulse', 'ra', 'rm', 'r3d', 'rl2', 'rm', 'raw', 'roq', 'rf64', 'rpl', 'rsd', 'rso', 'rtp', 's8', 'sap', 'sbc', 'sbg', 'scd', 'sdl', 'sdl2', 'sdp', 'sdr2', 'sds', 'sdx', 'ser', 'sga', 'shn', 'sln', 'smk', 'sol', 'svi', 'sox', 'spx', 'svag', 'svcd', 'svs', 'swf', 'tak', 'tee', 'thp', 'tmv', 'tta', 'tty', 'txd', 'ty', 'v210', 'v210x', 'vag', 'u16be', 'u16le', 'u24be', 'u24le', 'u32be', 'u32le', 'u8', 'vc1', 'vcd', 'vidc', 'v4l2', 'viv', 'vivo', 'vmd', 'vob', 'voc', 'vox', 'vpk', 'vqf', 'w64', 'wav', 'wc3', 'webm', 'wsaud', 'wsd', 'wsvqa', 'wtv', 'wv', 'wve', 'x11grab', 'xa', 'xbin', 'xbm_pipe', 'xmv', 'xv', 'xvag', 'wma', 'xwma', 'yop', 'mts', 'm2ts', 'ts', 'wmv', 'mng', 'drc', 'yuv', 'rm', 'rmvb']
-const audio_types = ['8svx', 'aa', 'aac', 'aax', 'ac3', 'acm', 'act', 'adts', 'adx', 'aea', 'aiff', 'alac', 'alaw', 'alp', 'alsa', 'amr', 'amrn', 'amrwb', 'apc', 'ape', 'apm', 'aptx', 'wst', 'au', 'awb', 'caf', 'cda', 'cdg', 'dss', 'dts', 'bfstm', 'binka', 'eac3', 'flac', 'fsb', 'f4a', 'f4b', 'f32le', 'f64', 'gsm', 'hca', 'imf', 'iklax', 'ipod', 'icram', 'latm', 'loas', 'mgsts', 'mlp', 'mmf', 'mods', 'm4a', 'm4b', 'mp2', 'mp3', 'm4p', 'mpc', 'mpc8', 'mpeg1', 'mulaw', 'musx', 'mogg', 'oga', 'ogg', 'oma', 'pmp', 'pvf', 'qcp', 'pulse', 'ra', 'rf64', 'sdx', 'shn', 'sox', 'spx', 'tak', 'tta', 'vag', 'voc', 'vox', 'vqf', 'w64', 'wav', 'wv', 'xa', 'wma', 'xwma']
 const image_types = ['jpeg', 'jpg', 'png', 'webp', 'tiff', 'svg', 'xbm', 'ico']
 const sub_types = ['srt', 'webvtt', 'vtt', 'lrc', 'lrc2', 'ass', 'scc']
 const media_info_type = 'mediainfo'
@@ -108,10 +107,10 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
         try {
             const lib_i = JSON.parse(fs.readFileSync(dir, 'utf8'))
             const {error: lib_error} = library_schema.validate(lib_i)
-            if (lib_error) {errors.push(`$[library ${dir}]: not formatted in correct library JSON format`)}
+            if (lib_error) {errors.push(`$[library ${dir}]: not formatted in correct library JSON format (error code 1)`)}
             else {library.push(...lib_i)}
         } catch {
-            errors.push(`[library ${dir}]: failed to parse as JSON`)
+            errors.push(`[library ${dir}]: failed to parse as JSON (error code 2)`)
         }
     })
 
@@ -135,6 +134,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
 
                 const SSDirsMediaFiles = []  // media files in each sub-sub-directory
                 const SDirMediaFiles = []  // media files in sub-directory
+                let SSDirs = []  // all sub-directories
 
                 // 1) ANALYZE DIRECTORY STRUCTURE
                 // Sub-directory files and sub-sub-directories
@@ -146,13 +146,18 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                         SSDir = true
                         const mediaFilesS = findFilesWithExtensions(itemS, media_types)  // recursive media files in sub-sub-directory
                         if (mediaFilesS.length === 0) {SSDir0 = true}
-                        else if (mediaFilesS.length === 1) {SSDir1 = true; SSDirsMediaFiles.push(mediaFilesS)}
-                        else if (mediaFilesS.length > 1) {SSDirN = true; SSDirsMediaFiles.push(mediaFilesS)}
+                        else if (mediaFilesS.length === 1) {SSDir1 = true; SSDirsMediaFiles.push(mediaFilesS); SSDirs.push(subDirItem)}
+                        else if (mediaFilesS.length > 1) {SSDirN = true; SSDirsMediaFiles.push(mediaFilesS); SSDirs.push(subDirItem)}
                     } else {  // sub-directory media file
                         const extS = path.extname(itemS).toLowerCase().substring(1)
                         if (media_types.includes(extS)) {mediaInSDir = true; SDirMediaFiles.push(itemS)}
                     }
                 })
+
+                if (! (SSDirs.length === SSDirsMediaFiles.length) ) {
+                    errors.push(`$[collection ${subDir}]: error creating collection object from this directory (error code 3)`)
+                    return
+                }
 
                 // 2) DEFINE HELPER FUNCTIONS
                 // Helper function that takes array of paths and translates it to array of items
@@ -167,15 +172,10 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                 }
 
                 // Helper function that gets group labels from sample file
-                const getGroupLabels = (file, n) => {
-                    let gLabel
-                    if (audio_types.includes(path.extname(file).toLowerCase().substring(1))) {gLabel = "Tracklist"}
-                    else if (n === 1) {gLabel = "Collection"}
-                    else (gLabel = "Season")
-
-                    if (n === 1) {return [gLabel]}
-                    else {return [...Array(n).keys()].map(i => `${gLabel} ${i+1}`)}
-                }
+                const getGroupLabels = (groups) => groups.map(g => {
+                    if ((/^s\d+$/).test(g)) {return `Season ${parseInt(g.slice(1))}`}
+                    else {return g}
+                })
 
                 // 3) GET GLOBAL INFO
                 let global_info = {}
@@ -245,7 +245,8 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                 // Construct collection for this sub-directory
                 if (mediaInSDir) {
                     if (SSDirN || SSDir1) {  // all sub-directory files in group 0, sub-sub directory files in rest of groups
-                        collectionGroupLabels = getGroupLabels(SDirMediaFiles[0], SSDirsMediaFiles.length + 1)
+                        collectionGroupLabels = [path.basename(item)]
+                        collectionGroupLabels.extend(getGroupLabels(SSDirs))
                         collectionItems.push(pathsToItems(SDirMediaFiles))
                         collectionItemLabels.push(SDirMediaFiles.map(p => path.basename(p)))
                         SSDirsMediaFiles.forEach(x => {
@@ -253,17 +254,13 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                             collectionItemLabels.push(x.map(p => path.basename(p)))
                         })
                     } else if (!SSDir || SSDir0) {  // all mediafiles are in sub-directory
-                        collectionGroupLabels = getGroupLabels(SDirMediaFiles[0], 1)
+                        collectionGroupLabels = [path.basename(item)]
                         collectionItems.push(pathsToItems(SDirMediaFiles))
                         collectionItemLabels.push(SDirMediaFiles.map(p => path.basename(p)))
                     }
                 } else {
                     if (SSDirN) {  // sub-sub directory files for each group
-                        if (SSDirsMediaFiles.length === 1) {  // group label should be the sub-sub directory's name}  // only one sub-sub directory -> use its name as group label
-                            let groupLabel = path.basename(path.dirname(SSDirsMediaFiles[0][0]))
-                            if ((/^s\d+$/).test(groupLabel)) {groupLabel = `Season ${parseInt(groupLabel.slice(1))}`}  // parse s## to Season ##
-                            collectionGroupLabels = [groupLabel]
-                        } else {collectionGroupLabels = getGroupLabels(SSDirsMediaFiles[0][0], SSDirsMediaFiles.length)}
+                        collectionGroupLabels = getGroupLabels(SSDirs)
                         SSDirsMediaFiles.forEach(x => {
                             collectionItems.push(pathsToItems(x))
                             collectionItemLabels.push(x.map(p => path.basename(p)))
@@ -277,9 +274,9 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                         })
                         collectionItems.push(collectionItemsT)
                         collectionItemLabels.push(collectionItemLabelsT)
-                        collectionGroupLabels = getGroupLabels(SSDirsMediaFiles[0][0], collectionItemLabels.length)
+                        collectionGroupLabels = [path.basename(item)]
                     } else if (!SSDir || SSDir0) {  // no compatible media files, push error
-                        errors.push(`[collection: ${subDir}]: no compatible media found in this directory`)
+                        errors.push(`[collection: ${subDir}]: no compatible media found in this directory (error code 4)`)
                     }
                 }
 
@@ -298,7 +295,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
                     }
 
                     const {error: col_error} = collections_schema.validate(this_collection)
-                    if (col_error) {errors.push(`$[collection ${subDir}]: error creating collection object from this directory`)}
+                    if (col_error) {errors.push(`$[collection ${subDir}]: error creating collection object from this directory (error code 5)`)}
                     else {library.push(this_collection)}
                 }
             }
@@ -319,7 +316,7 @@ const createLibrary = (collection_dirs, single_dirs, library_dirs) => {
             }
 
             const {error: sin_error} = singles_schema.validate(this_single)
-            if (sin_error) {errors.push(`$[single ${dir}]: error creating single object from this media file`)}
+            if (sin_error) {errors.push(`$[single ${dir}]: error creating single object from this media file (error code 6)`)}
             else {library.push(this_single); warnings.push(...this_warnings)}
         })
     })
