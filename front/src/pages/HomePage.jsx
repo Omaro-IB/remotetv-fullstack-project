@@ -49,6 +49,7 @@ const HomePage = ({dark, displayMessage}) => {
     const [hasSub, sethasSub] = useState(false);
     const [hasMultipleAudio, setHasMultipleAudio] = useState(false);
     const [details, setDetails] = useState("");
+    const [episodeName, setEpisodeName] = useState("");
 
     const [skipBy, setSkipBy] = useState(10);
     const [timeSelectorM, setTimeSelectorM] = useState(-1);
@@ -92,6 +93,7 @@ const HomePage = ({dark, displayMessage}) => {
                     sethasSub(thisItem["sub"] !== undefined || status.data["subsavailable"] === true)
                     setHasMultipleAudio(status.data["multipleaudios"] === true)
                     setDetails(thisItem["text"] === undefined ? (status.data["playing"]["global_text"] !== undefined ? status.data["playing"]["global_text"] : "") : thisItem["text"])
+                    setEpisodeName(thisItem["episode_name"] === undefined ? "" : thisItem["episode_name"])
 
                     resolve([status.data["resumed"], status.data["time"]])
                 } else {
@@ -244,7 +246,7 @@ const HomePage = ({dark, displayMessage}) => {
 
                     {/* Media details if mediainfo is present */}
                     <div className={details === "" ? "hidden" : "w-1/2 max-w-full mx-auto mt-10"}>
-                        <h1 className={"text-2xl"}><strong>Details:</strong></h1>
+                        <h1 className={"text-2xl"}><strong>{`Details${episodeName === "" ? ":" : " of " + episodeName + ":"}`}</strong></h1>
                         <p className={"text-lg text-left mt-2"}>{details}</p>
                     </div>
                 </div>
