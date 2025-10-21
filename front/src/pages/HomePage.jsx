@@ -246,7 +246,7 @@ const HomePage = ({dark, displayMessage}) => {
 
                     {/* Media details if mediainfo is present */}
                     <div className={details === "" ? "hidden" : "w-1/2 max-w-full mx-auto mt-10"}>
-                        <h1 className={"text-2xl"}><strong>{`Details${episodeName === "" ? ":" : " of " + episodeName + ":"}`}</strong></h1>
+                        <h1 className={"text-2xl"}><strong>{`Details${episodeName === "" ? ":" : " of \"" + episodeName + "\":"}`}</strong></h1>
                         <p className={"text-lg text-left mt-2"}>{details}</p>
                     </div>
                 </div>
